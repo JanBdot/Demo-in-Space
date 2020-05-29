@@ -1,48 +1,61 @@
-var vertexShaderText = 
-[
-'precision mediump float;',
-'',
-'attribute vec3 vertPosition;',
-'attribute vec3 vertColor;',
-'attribute vec3 vertNormal;',
-'varying vec3 fragColor;',
-'varying vec3 fragNormal;',
-'uniform mat4 mWorld;',
-'uniform mat4 mView;',
-'uniform mat4 mProj;',
-'',
-'void main()',
-'{',
-'  fragColor = vertColor;',
-'  fragNormal = vertNormal;',
-'  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-'}'
-].join('\n');
+var vertexShaderText =
+`
+precision mediump float;
+
+uniform mat4 mWorld;
+uniform mat4 mView;
+uniform mat4 mProj;
+uniform mat3 mNormal;
+uniform vec3 lightDir;
+attribute vec3 vPosition;
+attribute vec3 vNormal;
+attribute vec2 vTexCoord;
+varying vec3 fNormal;
+varying vec3 fLightDir;
+varying vec2 fTexCoord;
+
+void main()
+{
+  fNormal = mNormal * vNormal;
+  fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
+  fTexCoord = vTexCoord;
+  gl_Position = mProj * mView * mWorld * vec4(vPosition, 1.0);
+}
+`;
 
 var fragmentShaderText =
-[
-'precision mediump float;',
-'',
-'varying vec3 fragColor;',
-'varying vec3 fragNormal;',
-'void main()',
-'{',
-'  gl_FragColor = vec4(fragNormal, 1.0);',
-'}'
-].join('\n');
+`
+precision mediump float;
+
+uniform vec3 cAmbient;
+uniform vec3 cDiffuse;
+uniform vec3 cSpecular;
+uniform float alpha;
+uniform sampler2D sampler;
+varying vec3 fNormal;
+varying vec3 fLightDir;
+varying vec2 fTexCoord;
+void main()
+{
+  vec3 lightDir = normalize(fLightDir);
+  vec3 normalDir = normalize(fNormal);
+  vec3 eyeDir = vec3(0.0, 0.0, 1.0);
+  vec3 light = cAmbient;
+  light += cDiffuse * max(dot(normalDir, lightDir), 0.0);
+  light += cSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), alpha);
+  gl_FragColor =  texture2D(sampler, fTexCoord);
+}
+`;
 
 // This is just a simple demonstration. Wavefront OBJ is not fully supported!
 // See https://en.wikipedia.org/wiki/Wavefront_.obj_file for more information.
-var fetchModel = async function(location) {
+async function fetchModel(location) {
 	
 	// fetch is explained at https://www.youtube.com/watch?v=tc8DU14qX6I.
 	var response = await fetch(location);
 	var txt = await response.text();
 	var lines = txt.split(/\r*\n/);
 
-	var oa = document.getElementById('output-area');
-	oa.innerHTML = lines.join('<br>\n');
-	
 	var v = [];
 	var vt = [];
 	var vn = [];
@@ -69,31 +82,10 @@ var fetchModel = async function(location) {
 			}
 		}
 	}
-	console.log(vbo);
-	
 	return vbo;
 };
 
-var InitDemo = async function () {
-
-	// Get WebGL context
-	console.log('Getting WebGL context ...');
-	var canvas = document.getElementById('cg1-canvas');
-	var gl = canvas.getContext('webgl');
-
-	if (!gl) {
-		console.log('WebGL not supported, falling back on experimental-webgl');
-		gl = canvas.getContext('experimental-webgl');
-	}
-
-	if (!gl) {
-		console.error('Your browser does not support WebGL');
-		return;
-	}
-
-
-	// Create shaders
-	console.log('Creating shaders ...'); 
+function createShaderProgram(gl, vertexShaderText, fragmentShaderText) {
 	var vertexShader = gl.createShader(gl.VERTEX_SHADER);
 	var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
@@ -125,218 +117,163 @@ var InitDemo = async function () {
 		console.error('ERROR validating program!', gl.getProgramInfoLog(program));
 		return;
 	}
+	return program;
+}
 
-	// Create buffer
-	console.log('Creating buffer ...');
-	var boxVertices = 
-	[ // X, Y, Z           R, G, B
-		// Top
-		-1.0, 1.0, -1.0,   0.5, 0.5, 0.5,
-		-1.0, 1.0, 1.0,    0.5, 0.5, 0.5,
-		1.0, 1.0, 1.0,     0.5, 0.5, 0.5,
-		1.0, 1.0, -1.0,    0.5, 0.5, 0.5,
+async function createplanetExpress(gl) {
+	var planetExpress = {};
 
-		// Left
-		-1.0, 1.0, 1.0,    0.75, 0.25, 0.5,
-		-1.0, -1.0, 1.0,   0.75, 0.25, 0.5,
-		-1.0, -1.0, -1.0,  0.75, 0.25, 0.5,
-		-1.0, 1.0, -1.0,   0.75, 0.25, 0.5,
+	var vertices = await fetchModel('PlanetExpress_v0.obj');
 
-		// Right
-		1.0, 1.0, 1.0,    0.25, 0.25, 0.75,
-		1.0, -1.0, 1.0,   0.25, 0.25, 0.75,
-		1.0, -1.0, -1.0,  0.25, 0.25, 0.75,
-		1.0, 1.0, -1.0,   0.25, 0.25, 0.75,
-
-		// Front
-		1.0, 1.0, 1.0,    1.0, 0.0, 0.15,
-		1.0, -1.0, 1.0,    1.0, 0.0, 0.15,
-		-1.0, -1.0, 1.0,    1.0, 0.0, 0.15,
-		-1.0, 1.0, 1.0,    1.0, 0.0, 0.15,
-
-		// Back
-		1.0, 1.0, -1.0,    0.0, 1.0, 0.15,
-		1.0, -1.0, -1.0,    0.0, 1.0, 0.15,
-		-1.0, -1.0, -1.0,    0.0, 1.0, 0.15,
-		-1.0, 1.0, -1.0,    0.0, 1.0, 0.15,
-
-		// Bottom
-		-1.0, -1.0, -1.0,   0.5, 0.5, 1.0,
-		-1.0, -1.0, 1.0,    0.5, 0.5, 1.0,
-		1.0, -1.0, 1.0,     0.5, 0.5, 1.0,
-		1.0, -1.0, -1.0,    0.5, 0.5, 1.0,
-	];
-
-	var boxIndices =
-	[
-		// Top
-		0, 1, 2,
-		0, 2, 3,
-
-		// Left
-		5, 4, 6,
-		6, 4, 7,
-
-		// Right
-		8, 9, 10,
-		8, 10, 11,
-
-		// Front
-		13, 12, 14,
-		15, 14, 12,
-
-		// Back
-		16, 17, 18,
-		16, 18, 19,
-
-		// Bottom
-		21, 20, 22,
-		22, 20, 23
-	];
-
-	// add boxNormalBufferObject
-	// var boxNormalBufferObject = gl.createBuffer();
-	// gl.bindBuffer(gl.ARRAY_BUFFER, boxNormalBufferObject);
-
-	var boxVertexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
+	planetExpress.vertexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, planetExpress.vertexBufferObject);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-	var boxIndexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBufferObject);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	planetExpress.texture0 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, planetExpress.texture0);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("spaceShipTexture"));
+	gl.generateMipmap(gl.TEXTURE_2D);
+	gl.bindTexture(gl.TEXTURE_2D, null);
 
-	var positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
-	var colorAttribLocation = gl.getAttribLocation(program, 'vertColor');
-	var normalAttribLocation = gl.getAttribLocation(program, 'vertNormal');
-	
-	var drawBox = function() {
-		gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBufferObject);
+	planetExpress.draw = function(program) {
+		var cAmbientUniformLocation = gl.getUniformLocation(program, 'cAmbient');
+		gl.uniform3f(cAmbientUniformLocation, 0.23, 0.09, 0.03);
+
+		var cDiffuseUniformLocation = gl.getUniformLocation(program, 'cDiffuse');
+		gl.uniform3f(cDiffuseUniformLocation, 0.55, 0.21, 0.07);
+
+		var cSpecularUniformLocation = gl.getUniformLocation(program, 'cSpecular');
+		gl.uniform3f(cSpecularUniformLocation, 0.58, 0.22, 0.07);
+
+		var alphaUniformLocation = gl.getUniformLocation(program, 'alpha');
+		gl.uniform1f(alphaUniformLocation, 51.2);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
+
+		var positionAttribLocation = gl.getAttribLocation(program, 'vPosition');
+		var texCoordAttribLocation = gl.getAttribLocation(program, 'vTexCoord');
+		var normalAttribLocation = gl.getAttribLocation(program, 'vNormal');
 		gl.vertexAttribPointer(
 			positionAttribLocation, // Attribute location
 			3, // Number of elements per attribute
 			gl.FLOAT, // Type of elements
 			gl.FALSE,
-			6 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
 			0 // Offset from the beginning of a single vertex to this attribute
 		);
 		gl.vertexAttribPointer(
-			colorAttribLocation, // Attribute location
-			3, // Number of elements per attribute
+			texCoordAttribLocation, // Attribute location
+			2, // Number of elements per attribute
 			gl.FLOAT, // Type of elements
 			gl.FALSE,
-			6 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
 			3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
-		);
-		gl.enableVertexAttribArray(positionAttribLocation);
-		gl.enableVertexAttribArray(colorAttribLocation);
-		gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, null);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-	}
-	
-	var planetExpressVertices = await fetchModel('PlanetExpress_v0.obj');
-
-	// var planetExpressNormalBufferObject = gl.createBuffer();
-	// gl.bindBuffer(gl.ARRAY_BUFFER, planetExpressNormalBufferObject);
-	// gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(planetExpressVertices), gl.STATIC_DRAW);
-	// gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-
-	var planetExpressVertexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, planetExpressVertexBufferObject);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(planetExpressVertices), gl.STATIC_DRAW);
-	gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-	var drawplanetExpress = function() {
-		gl.bindBuffer(gl.ARRAY_BUFFER, planetExpressVertexBufferObject);
-		gl.vertexAttribPointer(
-			positionAttribLocation, // Attribute location
-			3, // Number of elements per attribute
-			gl.FLOAT, // Type of elements
-			gl.FALSE,
-			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-			0 // Offset from the beginning of a single vertex to this attribute
-		);
-		gl.vertexAttribPointer(
-			colorAttribLocation, // Attribute location
-			3, // Number of elements per attribute
-			gl.FLOAT, // Type of elements
-			gl.FALSE,
-			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
-			);
+		);		
 		gl.vertexAttribPointer(
 			normalAttribLocation, // Attribute location
 			3, // Number of elements per attribute
 			gl.FLOAT, // Type of elements
 			gl.FALSE,
 			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute				
+			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 		);
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, planetExpress.texture0);
 
 		gl.enableVertexAttribArray(positionAttribLocation);
-		gl.enableVertexAttribArray(colorAttribLocation);
-		gl.drawArrays(gl.TRIANGLES, 0, planetExpressVertices.length/8);
+		gl.enableVertexAttribArray(texCoordAttribLocation);
+		gl.enableVertexAttribArray(normalAttribLocation);
+
+		//var colorAttribLocation = gl.getAttribLocation(program, 'vColor');
+		//gl.vertexAttrib4f(colorAttribLocation, 1.0, 1.0, 1.0, 1.0);
+				
+		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/8);
+		
+		gl.disableVertexAttribArray(positionAttribLocation);
+		gl.disableVertexAttribArray(texCoordAttribLocation);
+		gl.disableVertexAttribArray(normalAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
+	return planetExpress;
+}
 
-	// Tell OpenGL state machine which program should be active.
+async function InitDemo() {
+
+	// Get WebGL context
+	console.log('Getting WebGL context ...');
+	var canvas = document.getElementById('cg1-canvas');
+	var gl = canvas.getContext('webgl');
+	if (!gl) {
+		console.log('WebGL not supported, falling back on experimental-webgl');
+		gl = canvas.getContext('experimental-webgl');
+	}
+	if (!gl) {
+		console.error('Your browser does not support WebGL');
+		return;
+	}
+
+	// Create shaders
+	console.log('Creating shaders ...');
+	var program = createShaderProgram(gl, vertexShaderText, fragmentShaderText);
+	if (!program) {
+		console.error('Cannot run without shader program!');
+		return;
+	}
+
+	// Create planetExpress object
+	console.log('Creating planetExpress object ...');
+	var planetExpress = await createplanetExpress(gl);
+
+	// Configure OpenGL state machine
 	gl.useProgram(program);
 
 	gl.clearColor(0.75, 0.85, 0.8, 1.0);
 	gl.enable(gl.DEPTH_TEST);
-	gl.enable(gl.CULL_FACE);
-	gl.frontFace(gl.CCW);
-	gl.cullFace(gl.BACK);
 
-	var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
-	var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
-	var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
+	var lightDirUniformLocation = gl.getUniformLocation(program, 'lightDir');
+	gl.uniform3f(lightDirUniformLocation, 0.0, 1.0, 0.0);
 
-	var worldMatrix = new Float32Array(16);
-	var viewMatrix = new Float32Array(16);
 	var projMatrix = new Float32Array(16);
-	mat4.lookAt(viewMatrix, [0, 0, 8], [0, 0, 0], [0, 1, 0]);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
-
-	gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+	var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
 	gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
 	// Main render loop
+	var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
+	var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
+	var matNormUniformLocation = gl.getUniformLocation(program, 'mNormal');
+
 	var angle = 0;
+	var worldMatrix = new Float32Array(16);
+	var viewMatrix = new Float32Array(16);
+	var normalMatrix = new Float32Array(9);
+	var tmpMatrix = new Float32Array(16);
 	var loop = function () {
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
 		angle = performance.now() / 1000 / 6 * 2 * Math.PI;
 
-		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -5.0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1, 0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle / 4, [1, 0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		drawplanetExpress();
+		mat4.lookAt(viewMatrix, [0, 3, 7], [0, 0, 0], [0, 1, 0]);
+		mat4.rotate(viewMatrix, viewMatrix, angle/4, [0, 1, 0]);
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 
 		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [2.0, 0.0, 0.0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1, 0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle / 4, [1, 0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		// drawplanetExpress();
 
-		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [-2.0, 0.0, 0.0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle / 4, [1, 0, 0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1, 0]);
-		mat4.scale(worldMatrix, worldMatrix, [0.8, 0.8, 0.8]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		// drawBox();
+		mat4.multiply(tmpMatrix, viewMatrix, worldMatrix);
+		//mat4.identity(tmpMatrix);
+		mat3.normalFromMat4(normalMatrix, tmpMatrix);
+		gl.uniformMatrix3fv(matNormUniformLocation, gl.FALSE, normalMatrix);
+
+		planetExpress.draw(program);
 
 		requestAnimationFrame(loop);
 	};
+
 	console.log('Entering rendering loop ...')
 	requestAnimationFrame(loop);
 };
