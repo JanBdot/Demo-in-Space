@@ -238,21 +238,21 @@ var InitDemo = async function () {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	}
 	
-	var teapotVertices = await fetchModel('teapot.obj');
+	var planetExpressVertices = await fetchModel('PlanetExpress_v0.obj');
 
-	// var teapotNormalBufferObject = gl.createBuffer();
-	// gl.bindBuffer(gl.ARRAY_BUFFER, teapotNormalBufferObject);
-	// gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotVertices), gl.STATIC_DRAW);
+	// var planetExpressNormalBufferObject = gl.createBuffer();
+	// gl.bindBuffer(gl.ARRAY_BUFFER, planetExpressNormalBufferObject);
+	// gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(planetExpressVertices), gl.STATIC_DRAW);
 	// gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
 
-	var teapotVertexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexBufferObject);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotVertices), gl.STATIC_DRAW);
+	var planetExpressVertexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, planetExpressVertexBufferObject);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(planetExpressVertices), gl.STATIC_DRAW);
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-	var drawTeapot = function() {
-		gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexBufferObject);
+	var drawplanetExpress = function() {
+		gl.bindBuffer(gl.ARRAY_BUFFER, planetExpressVertexBufferObject);
 		gl.vertexAttribPointer(
 			positionAttribLocation, // Attribute location
 			3, // Number of elements per attribute
@@ -280,7 +280,7 @@ var InitDemo = async function () {
 
 		gl.enableVertexAttribArray(positionAttribLocation);
 		gl.enableVertexAttribArray(colorAttribLocation);
-		gl.drawArrays(gl.TRIANGLES, 0, teapotVertices.length/8);
+		gl.drawArrays(gl.TRIANGLES, 0, planetExpressVertices.length/8);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 
@@ -316,16 +316,16 @@ var InitDemo = async function () {
 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -5.0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1, 0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle / 4, [1, 0, 0]);
+		// mat4.rotate(worldMatrix, worldMatrix, angle / 4, [1, 0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		drawTeapot();
+		drawplanetExpress();
 
 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [2.0, 0.0, 0.0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1, 0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle / 4, [1, 0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		drawTeapot();
+		// drawplanetExpress();
 
 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [-2.0, 0.0, 0.0]);
@@ -333,7 +333,7 @@ var InitDemo = async function () {
 		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1, 0]);
 		mat4.scale(worldMatrix, worldMatrix, [0.8, 0.8, 0.8]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		drawBox();
+		// drawBox();
 
 		requestAnimationFrame(loop);
 	};
