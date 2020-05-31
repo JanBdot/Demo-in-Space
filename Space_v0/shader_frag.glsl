@@ -33,4 +33,5 @@ void main()
 
   vec3 mixColor = mix(earthColor, cloudColor, cloud);
   gl_FragColor = vec4(mixColor, 1.0);
+
 }
