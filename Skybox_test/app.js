@@ -503,9 +503,11 @@ async function InitDemo() {
 	const loop = function () {
 		// Viewmatrix
 		const angle = performance.now() / 1000 / 6 * 2 * Math.PI;
-		mat4.lookAt(viewMatrix, [0, 3, 100], [0, 10, 0], [0, 1, 0]);
-		mat4.rotate(viewMatrix, viewMatrix, angle/50, [0, 1, 0]);
-		mat4.rotate(viewMatrix, viewMatrix, angle/3, [0, 0, 1]);
+		mat4.lookAt(viewMatrix, [0, 3, 7], [0, 0, 0], [0, 1, 0]);
+		mat4.rotate(viewMatrix, viewMatrix, angle/4, [0, 1, 0]);
+		// mat4.lookAt(viewMatrix, [0, 3, 100], [0, 10, 0], [0, 1, 0]);
+		// mat4.rotate(viewMatrix, viewMatrix, angle/50, [0, 1, 0]);
+		// mat4.rotate(viewMatrix, viewMatrix, angle/3, [0, 0, 1]);
 
 		// clear framebuffer
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
