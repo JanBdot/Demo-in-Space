@@ -269,6 +269,53 @@ async function createEarth(gl){
 	return earth;
 }
 
+async function createSpaceship(gl) {
+	let spaceship = {};
+
+	const vertices = await fetchModel('./objects/cosmos-spaceship.obj')
+
+	spaceship.vertexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, spaceship.vertexBufferObject);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+	spaceship.draw = function() {
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
+
+		const positionAttribLocation = gl.getAttribLocation(this.program, 'vPosition');
+		gl.vertexAttribPointer(
+			positionAttribLocation, // Attribute location
+			3, // Number of elements per attribute
+			gl.FLOAT, // Type of elements
+			gl.FALSE,
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			0 // Offset from the beginning of a single vertex to this attribute
+		);
+		gl.enableVertexAttribArray(positionAttribLocation);
+
+		const normalAttribLocation = gl.getAttribLocation(this.program, 'vNormal');
+		gl.vertexAttribPointer(
+			normalAttribLocation, // Attribute location
+			3, // Number of elements per attribute
+			gl.FLOAT, // Type of elements
+			gl.FALSE,
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+		);
+		gl.enableVertexAttribArray(normalAttribLocation);
+
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+
+		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/8);
+
+		gl.disableVertexAttribArray(positionAttribLocation);
+		gl.disableVertexAttribArray(normalAttribLocation);
+		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	}
+
+	return spaceship;
+}
+
 async function createTeapot(gl) {
 	let teapot = {};
 
@@ -463,15 +510,15 @@ async function InitDemo() {
 		return;
 	}
 
-	// // Create box
-	// console.log('Creating box... ');
-	// const box = await createBox(gl);
-	// box.texture = texture;
-	// box.program = await createShaderProgram(gl, 'cube_vert.glsl', 'cube_frag.glsl');
-	// if (!box.program) {
-	// 	console.error('box cannot run without shader');
-	// 	return;
-	// }
+	// Create spaceship object
+	console.log('Creating spaceship object ...');
+	const spaceship = await createSpaceship(gl);
+	spaceship.texture = texture;
+	spaceship.program = await createShaderProgram(gl, './shaders/spaceship_vert.glsl', './shaders/spaceship_frag.glsl');
+	if (!teapot.program) {
+		console.error('spaceship Cannot run without shader program!');
+		return;
+	}
 
 	// // Create earth objects
 	// console.log('Creating earth objects ...');
@@ -503,7 +550,7 @@ async function InitDemo() {
 	const loop = function () {
 		// Viewmatrix
 		const angle = performance.now() / 1000 / 6 * 2 * Math.PI;
-		mat4.lookAt(viewMatrix, [0, 3, 7], [0, 0, 0], [0, 1, 0]);
+		mat4.lookAt(viewMatrix, [0, 3, 15], [0, 0, 0], [0, 1, 0]);
 		mat4.rotate(viewMatrix, viewMatrix, angle/4, [0, 1, 0]);
 		// mat4.lookAt(viewMatrix, [0, 3, 100], [0, 10, 0], [0, 1, 0]);
 		// mat4.rotate(viewMatrix, viewMatrix, angle/50, [0, 1, 0]);
@@ -529,30 +576,30 @@ async function InitDemo() {
 
 		skybox.draw();
 
-		// draw teapot
+		// draw spaceship
 		gl.enable(gl.DEPTH_TEST);
-		gl.useProgram(teapot.program);
+		gl.useProgram(spaceship.program);
 
 		const invViewMatrix = mat3.create();
 		mat3.fromMat4(invViewMatrix, viewMatrix);
 		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
 		const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
 		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
-		let eyeDirUniformLocation = gl.getUniformLocation(teapot.program, 'eyeDir');
+		let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
 		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
 		// console.log("EyeDir: " + eyeDir);
 
-		matProjUniformLocation = gl.getUniformLocation(teapot.program, 'mProj');
+		matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
-		matViewUniformLocation = gl.getUniformLocation(teapot.program, 'mView');
+		matViewUniformLocation = gl.getUniformLocation(spaceship.program, 'mView');
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 
 		mat4.identity(worldMatrix);
-		matWorldUniformLocation = gl.getUniformLocation(teapot.program, 'mWorld');
+		matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-		teapot.draw();
+		spaceship.draw();
 		
 
 		requestAnimationFrame(loop);
