@@ -19,8 +19,9 @@ void main()
    
   float kAmbient = 0.3;
   float kDiffuse = 0.7;
-  float kSpecular = 1.0;
-  float s = 70.0;
+  // float kSpecular = 1.0;
+  float kSpecular = 0.0;
+  float s = 70.0; 
 
   vec4 colorDay = texture2D(sBase, fTexCoord);
   vec4 colorNight = texture2D(sNormal, fTexCoord);
