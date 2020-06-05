@@ -11,7 +11,7 @@ varying vec3 fNormal;
 
 void main()
 {
-    fEyeDir = eyeDir;
-    fNormal = (mWorld * vec4(vNormal, 0.0)).xyz;
-    gl_Position = mProj * mView * mWorld * vec4(vPosition, 1.0);
+  fEyeDir = eyeDir;
+  fNormal = (mWorld * vec4(vNormal, 0.0)).xyz;
+  gl_Position = mProj * mView * mWorld * vec4(vPosition, 1.0);
 }

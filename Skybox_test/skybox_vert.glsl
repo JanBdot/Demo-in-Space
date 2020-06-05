@@ -7,6 +7,7 @@ varying vec3 fTexCoord;
 void main()
 {
   fTexCoord = vPosition;
-  vec3 viewPos = (mView * mWorld * vec4(vPosition, 0.0)).xyz;
-  gl_Position = mProj * vec4(viewPos, 1.0);
+  vec4 viewPos = (mView * mWorld * vec4(vPosition, 0.0));
+  viewPos.w = 1.0;
+  gl_Position = mProj * viewPos;
 }

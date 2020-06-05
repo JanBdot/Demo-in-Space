@@ -1,4 +1,12 @@
+/*
+Fragen:
+Wann müssen die Funktionen async sein?
+- Wenn ich auf etwas in einer anderen Funktion angwiesen bin (z.B. Texture), darf die Funktion in der die Textur erstellt wird nicht async sein?
+*/
+
 "use strict";
+
+window.onload = InitDemo;
 
 async function fetchModel(location) {
 	
@@ -74,7 +82,7 @@ async function createShaderProgram(gl, vertexShaderLocation, fragmentShaderLocat
 	return program;
 }
 
-async function createSkyBoxTexture(gl) {
+function createSkyBoxTexture(gl) {
 	const texture = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
 	gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -103,75 +111,35 @@ async function createSkyBoxTexture(gl) {
 	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 	// gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE); 
+
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+
+	return texture;
 }
 
-async function createSkyBox(gl) {
+function createSkyBox(gl) {
 	const box = {};
 
 	var vertices =
 	[ // X, Y, Z
-		// Top
-		-1.0, 1.0, -1.0,
-		-1.0, 1.0, 1.0, 
-		1.0, 1.0, 1.0,  
-		1.0, 1.0, -1.0, 
-
-		// Left
-		-1.0, 1.0, 1.0,   
-		-1.0, -1.0, 1.0,  
-		-1.0, -1.0, -1.0, 
-		-1.0, 1.0, -1.0,  
-
-		// Right
-		1.0, 1.0, 1.0,    
-		1.0, -1.0, 1.0,   
-		1.0, -1.0, -1.0,  
-		1.0, 1.0, -1.0,   
-
-		// Front
-		1.0, 1.0, 1.0,  
-		1.0, -1.0, 1.0,  
-		-1.0, -1.0, 1.0,  
-		-1.0, 1.0, 1.0,  
-
-		// Back
-		1.0, 1.0, -1.0,  
-		1.0, -1.0, -1.0,  
-		-1.0, -1.0, -1.0,  
-		-1.0, 1.0, -1.0,  
-
-		// Bottom
-		-1.0, -1.0, -1.0,
-		-1.0, -1.0, 1.0, 
-		1.0, -1.0, 1.0,  
-		1.0, -1.0, -1.0 
+		-1.0,  1.0, -1.0,  // 0
+		-1.0,  1.0,  1.0,  // 1
+		 1.0,  1.0,  1.0,  // 2
+		 1.0,  1.0, -1.0,  // 3
+		-1.0, -1.0, -1.0,  // 4
+		-1.0, -1.0,  1.0,  // 5
+		 1.0, -1.0,  1.0,  // 6
+		 1.0, -1.0, -1.0,  // 7
 	];
 
 	var indices =
 	[
-		// Front
-		13, 12, 14,
-		15, 14, 12,
-
-		// Top
-		0, 1, 2,
-		0, 2, 3,
-
-		// Left
-		5, 4, 6,
-		6, 4, 7,
-
-		// Right
-		8, 9, 10,
-		8, 10, 11,
-
-		// Back
-		16, 17, 18,
-		16, 18, 19,
-
-		// Bottom
-		21, 20, 22,
-		22, 20, 23
+		6, 2, 5,   1, 5, 2,   // front
+		0, 1, 2,   0, 2, 3,   // top
+		5, 1, 4,   4, 1, 0,   // left
+		2, 6, 7,   2, 7, 3,   // right
+		3, 7, 4,   3, 4, 0,   // back
+		5, 4, 6,   6, 4, 7    // bottom
 	];
 
 	box.vertexBufferObject = gl.createBuffer();
@@ -184,9 +152,10 @@ async function createSkyBox(gl) {
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
-	box.draw = function(positionAttribLocation) {
+	box.draw = function() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBufferObject);
+		const positionAttribLocation = gl.getAttribLocation(this.program, 'vPosition');
 		gl.vertexAttribPointer(
 			positionAttribLocation, // Attribute location
 			3, // Number of elements per attribute
@@ -301,43 +270,159 @@ async function createEarth(gl){
 }
 
 async function createTeapot(gl) {
-	var teapot = {};
+	let teapot = {};
 
-	var vertices = await fetchModel('teapot.obj');
+	const vertices = await fetchModel('teapot.obj');
 
-	teapot.vertexBufferObject = gl.createBuffer();
+	teapot.vertexBufferObject = gl.createBuffer(); // createBuffer() erstellt und initialisiert einen WebGLBuffer, der Daten wie vertices und Farbe speichert
+	// vertexBufferObject ist ein OpenGL feature, das Methoden zum zur Verfügung stellt um vertex data hochzuladen (position, normal, vecotr, color, etc.)
 	gl.bindBuffer(gl.ARRAY_BUFFER, teapot.vertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-	teapot.draw = function(positionAttribLocation, normalAttribLocation, colorAttribLocation, color) {
+	teapot.draw = function() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
+
+		const positionAttribLocation = gl.getAttribLocation(this.program, 'vPosition');
 		gl.vertexAttribPointer(
 			positionAttribLocation, // Attribute location
 			3, // Number of elements per attribute
 			gl.FLOAT, // Type of elements
 			gl.FALSE,
-			9 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
 			0 // Offset from the beginning of a single vertex to this attribute
 		);
+		gl.enableVertexAttribArray(positionAttribLocation);
+
+		const normalAttribLocation = gl.getAttribLocation(this.program, 'vNormal');
 		gl.vertexAttribPointer(
 			normalAttribLocation, // Attribute location
-			4, // Number of elements per attribute
+			3, // Number of elements per attribute
 			gl.FLOAT, // Type of elements
-			gl.TRUE,
-			9 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			gl.FALSE,
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
 			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 		);
-		gl.enableVertexAttribArray(positionAttribLocation);
 		gl.enableVertexAttribArray(normalAttribLocation);
-		gl.disableVertexAttribArray(colorAttribLocation);
-		gl.vertexAttrib4fv(colorAttribLocation, color);
-		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/9);
+
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+				
+		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/8);
+		
 		gl.disableVertexAttribArray(positionAttribLocation);
 		gl.disableVertexAttribArray(normalAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 	return teapot;
+}
+
+function createBox(gl) {
+	var box = {};
+
+	var vertices =
+	[ // X, Y, Z           R, G, B, A
+		// Top
+		-1.0, 1.0, -1.0,   0.5, 0.5, 0.5, 1.0,
+		-1.0, 1.0, 1.0,    0.5, 0.5, 0.5, 1.0,
+		1.0, 1.0, 1.0,     0.5, 0.5, 0.5, 1.0,
+		1.0, 1.0, -1.0,    0.5, 0.5, 0.5, 1.0,
+
+		// Left
+		-1.0, 1.0, 1.0,    0.75, 0.25, 0.5, 1.0,
+		-1.0, -1.0, 1.0,   0.75, 0.25, 0.5, 1.0,
+		-1.0, -1.0, -1.0,  0.75, 0.25, 0.5, 1.0,
+		-1.0, 1.0, -1.0,   0.75, 0.25, 0.5, 1.0,
+
+		// Right
+		1.0, 1.0, 1.0,    0.25, 0.25, 0.75, 1.0,
+		1.0, -1.0, 1.0,   0.25, 0.25, 0.75, 1.0,
+		1.0, -1.0, -1.0,  0.25, 0.25, 0.75, 1.0,
+		1.0, 1.0, -1.0,   0.25, 0.25, 0.75, 1.0,
+
+		// Front
+		1.0, 1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
+		1.0, -1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
+		-1.0, -1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
+		-1.0, 1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
+
+		// Back
+		1.0, 1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
+		1.0, -1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
+		-1.0, -1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
+		-1.0, 1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
+
+		// Bottom
+		-1.0, -1.0, -1.0,   0.5, 0.5, 1.0, 1.0,
+		-1.0, -1.0, 1.0,    0.5, 0.5, 1.0, 1.0,
+		1.0, -1.0, 1.0,     0.5, 0.5, 1.0, 1.0,
+		1.0, -1.0, -1.0,    0.5, 0.5, 1.0, 1.0,
+	];
+
+	var indices =
+	[
+		// Front
+		13, 12, 14,
+		15, 14, 12,
+
+		// Top
+		0, 1, 2,
+		0, 2, 3,
+
+		// Left
+		5, 4, 6,
+		6, 4, 7,
+
+		// Right
+		8, 9, 10,
+		8, 10, 11,
+
+		// Back
+		16, 17, 18,
+		16, 18, 19,
+
+		// Bottom
+		21, 20, 22,
+		22, 20, 23
+	];
+
+	box.vertexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, box.vertexBufferObject);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+	box.indexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, box.indexBufferObject);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
+	box.draw = function(positionAttribLocation, colorAttribLocation) {
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBufferObject);
+		gl.vertexAttribPointer(
+			positionAttribLocation, // Attribute location
+			3, // Number of elements per attribute
+			gl.FLOAT, // Type of elements
+			gl.FALSE,
+			7 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			0 // Offset from the beginning of a single vertex to this attribute
+		);
+		gl.vertexAttribPointer(
+			colorAttribLocation, // Attribute location
+			4, // Number of elements per attribute
+			gl.FLOAT, // Type of elements
+			gl.FALSE,
+			7 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+		);
+		gl.enableVertexAttribArray(positionAttribLocation);
+		gl.enableVertexAttribArray(colorAttribLocation);
+		gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+		gl.disableVertexAttribArray(positionAttribLocation);
+		gl.disableVertexAttribArray(colorAttribLocation);
+		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	}
+	return box;
 }
 
 async function InitDemo() {
@@ -359,25 +444,34 @@ async function InitDemo() {
 	const texture = createSkyBoxTexture(gl);
 
 	// Create skybox
-	console.log('Creating skybox... ');
-	const skybox = await createSkyBox(gl);
+	console.log('Creating skybox ...');
+	const skybox = createSkyBox(gl);
 	skybox.texture = texture;
 	skybox.program = await createShaderProgram(gl, 'skybox_vert.glsl', 'skybox_frag.glsl');
 	if (!skybox.program) {
-		console.error('Skybox cannot run without shader');
+		console.error('Cannot run without shader program!');
 		return;
 	}
-	
-	// // Create teapot
-	// console.log('Creating teapot... ');
-	// const teapot = await createTeapot(gl);
-	// teapot.texture = texture;
-	// teapot.program = await createShaderProgram(gl, 'teapot_vert.glsl', 'teapot_frag.glsl');
-	// if (!skybox.program) {
-	// 	console.error('teapot cannot run without shader');
+
+	// Create teapot object
+	console.log('Creating teapot object ...');
+	const teapot = await createTeapot(gl);
+	teapot.texture = texture;
+	teapot.program = await createShaderProgram(gl, 'teapot_vert.glsl', 'teapot_frag.glsl');
+	if (!teapot.program) {
+		console.error('Cannot run without shader program!');
+		return;
+	}
+
+	// // Create box
+	// console.log('Creating box... ');
+	// const box = await createBox(gl);
+	// box.texture = texture;
+	// box.program = await createShaderProgram(gl, 'cube_vert.glsl', 'cube_frag.glsl');
+	// if (!box.program) {
+	// 	console.error('box cannot run without shader');
 	// 	return;
 	// }
-
 
 	// // Create earth objects
 	// console.log('Creating earth objects ...');
@@ -394,67 +488,73 @@ async function InitDemo() {
 	// }
 
 	// Configure OpenGL state machine
-	gl.useProgram(skybox.program);
-	const positionAttribLocation = gl.getAttribLocation(skybox.program, 'vPosition');
-	const texCoordAttribLocation = gl.getAttribLocation(skybox.program, 'vTexCoord');
-	const normalAttribLocation = gl.getAttribLocation(skybox.program, 'vNormal');
-
 	gl.clearColor(0.0, 0.0, 0.0, 0.0);
 	// gl.enable(gl.DEPTH_TEST);
 	// gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	// gl.enable(gl.BLEND);
-
-	var projMatrix = new Float32Array(16);
-	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 	
-	const matWorldUniformLocation = gl.getUniformLocation(skybox.program, 'mWorld');
-	const matViewUniformLocation = gl.getUniformLocation(skybox.program, 'mView');
-	const matProjUniformLocation = gl.getUniformLocation(skybox.program, 'mProj');
-	
-	// const samplerDayLocation = gl.getUniformLocation(program, "sDay");
-	// gl.uniform1i(samplerDayLocation, 0);
-	// const samplerCloudLocation = gl.getUniformLocation(program, "sClouds");
-	// gl.uniform1i(samplerCloudLocation, 1);
-	// const samplerNightLocation = gl.getUniformLocation(program, "sNight");
-	// gl.uniform1i(samplerNightLocation, 2);
-	// const samplerOceanLocation = gl.getUniformLocation(program, "sOcean");
-	// gl.uniform1i(samplerOceanLocation, 3);
-	
-	// const shiftUniformLocation = gl.getUniformLocation(program, "shift");
-	
-	let angle = 0;
+	// init Main render loop
 	const worldMatrix = new Float32Array(16);
 	const viewMatrix = new Float32Array(16);
-	gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+	const projMatrix = new Float32Array(16);
+	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 	
 	// Main render loop
 	const loop = function () {
+		// Viewmatrix
+		const angle = performance.now() / 1000 / 6 * 2 * Math.PI;
+		mat4.lookAt(viewMatrix, [0, 3, 7], [0, 0, 0], [0, 1, 0]);
+		mat4.rotate(viewMatrix, viewMatrix, angle/4, [0, 1, 0]);
+
+		// clear framebuffer
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
-		angle = performance.now() / 1000 / 6 * 2 * Math.PI;
+		// draw skybox
+		// gl.depthMask(false);
+		gl.disable(gl.DEPTH_TEST);
+		gl.useProgram(skybox.program);
 
-		mat4.lookAt(viewMatrix, [0, 3, 100], [0, 10, 0], [0, 1, 0]);
-		mat4.rotate(viewMatrix, viewMatrix, angle/4, [0, 1, 0]);
+		let matProjUniformLocation = gl.getUniformLocation(skybox.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+
+		let matViewUniformLocation = gl.getUniformLocation(skybox.program, 'mView');
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
-		gl.depthMask(false);
-
-		mat4.identity(worldMatrix);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		skybox.draw(worldMatrix);
-
-		gl.depthMask(true);
 		
 		mat4.identity(worldMatrix);
-		mat4.scale(worldMatrix, worldMatrix, [2.0, 2.0, 2.0]);
-		// gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		// earth.draw(positionAttribLocation, texCoordAttribLocation, normalAttribLocation);
+		let matWorldUniformLocation = gl.getUniformLocation(skybox.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		skybox.draw();
+
+		// draw teapot
+		gl.enable(gl.DEPTH_TEST);
+		gl.useProgram(teapot.program);
+
+		const invViewMatrix = mat3.create();
+		mat3.fromMat4(invViewMatrix, viewMatrix);
+		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+		let eyeDirUniformLocation = gl.getUniformLocation(teapot.program, 'eyeDir');
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
+		// console.log("EyeDir: " + eyeDir);
+
+		matProjUniformLocation = gl.getUniformLocation(teapot.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+
+		matViewUniformLocation = gl.getUniformLocation(teapot.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+
+		mat4.identity(worldMatrix);
+		matWorldUniformLocation = gl.getUniformLocation(teapot.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		teapot.draw();
+		
 
 		requestAnimationFrame(loop);
 	};
 
 	console.log('Entering rendering loop ...')
 	requestAnimationFrame(loop);
-};
-
-window.onload = InitDemo;
+}
