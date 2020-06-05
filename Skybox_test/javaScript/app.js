@@ -272,7 +272,7 @@ async function createEarth(gl){
 async function createTeapot(gl) {
 	let teapot = {};
 
-	const vertices = await fetchModel('teapot.obj');
+	const vertices = await fetchModel('./objects/teapot.obj');
 
 	teapot.vertexBufferObject = gl.createBuffer(); // createBuffer() erstellt und initialisiert einen WebGLBuffer, der Daten wie vertices und Farbe speichert
 	// vertexBufferObject ist ein OpenGL feature, das Methoden zum zur Verfügung stellt um vertex data hochzuladen (position, normal, vecotr, color, etc.)
@@ -447,7 +447,7 @@ async function InitDemo() {
 	console.log('Creating skybox ...');
 	const skybox = createSkyBox(gl);
 	skybox.texture = texture;
-	skybox.program = await createShaderProgram(gl, 'skybox_vert.glsl', 'skybox_frag.glsl');
+	skybox.program = await createShaderProgram(gl, './shaders/skybox_vert.glsl', './shaders/skybox_frag.glsl');
 	if (!skybox.program) {
 		console.error('Cannot run without shader program!');
 		return;
@@ -457,7 +457,7 @@ async function InitDemo() {
 	console.log('Creating teapot object ...');
 	const teapot = await createTeapot(gl);
 	teapot.texture = texture;
-	teapot.program = await createShaderProgram(gl, 'teapot_vert.glsl', 'teapot_frag.glsl');
+	teapot.program = await createShaderProgram(gl, './shaders/teapot_vert.glsl', './shaders/teapot_frag.glsl');
 	if (!teapot.program) {
 		console.error('Cannot run without shader program!');
 		return;
