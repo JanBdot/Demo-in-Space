@@ -173,101 +173,101 @@ function createSkyBox(gl) {
 	return box;
 }
 
-async function createEarth(gl){
-	const earth = {};
+// async function createEarth(gl){
+// 	const earth = {};
 
-	const vertices = await fetchModel('earth.obj');
+// 	const vertices = await fetchModel('earth.obj');
 
-	earth.vertexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, earth.vertexBufferObject);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+// 	earth.vertexBufferObject = gl.createBuffer();
+// 	gl.bindBuffer(gl.ARRAY_BUFFER, earth.vertexBufferObject);
+// 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+// 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-	earth.texture0 = gl.createTexture();
-	gl.activeTexture(gl.TEXTURE0);
-	gl.bindTexture(gl.TEXTURE_2D, earth.texture0);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-albedo"));
-	gl.generateMipmap(gl.TEXTURE_2D);
-	gl.bindTexture(gl.TEXTURE_2D, null);
+// 	earth.texture0 = gl.createTexture();
+// 	gl.activeTexture(gl.TEXTURE0);
+// 	gl.bindTexture(gl.TEXTURE_2D, earth.texture0);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+// 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-albedo"));
+// 	gl.generateMipmap(gl.TEXTURE_2D);
+// 	gl.bindTexture(gl.TEXTURE_2D, null);
 
-	earth.texture1 = gl.createTexture();
-	gl.activeTexture(gl.TEXTURE1);
-	gl.bindTexture(gl.TEXTURE_2D, earth.texture1);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-clouds"));
-	gl.generateMipmap(gl.TEXTURE_2D);
-	gl.bindTexture(gl.TEXTURE_2D, null);
+// 	earth.texture1 = gl.createTexture();
+// 	gl.activeTexture(gl.TEXTURE1);
+// 	gl.bindTexture(gl.TEXTURE_2D, earth.texture1);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+// 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-clouds"));
+// 	gl.generateMipmap(gl.TEXTURE_2D);
+// 	gl.bindTexture(gl.TEXTURE_2D, null);
 
-	earth.texture2 = gl.createTexture();
-	gl.activeTexture(gl.TEXTURE2);
-	gl.bindTexture(gl.TEXTURE_2D, earth.texture2);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-night-lights"));
-	gl.generateMipmap(gl.TEXTURE_2D);
-	gl.bindTexture(gl.TEXTURE_2D, null);
+// 	earth.texture2 = gl.createTexture();
+// 	gl.activeTexture(gl.TEXTURE2);
+// 	gl.bindTexture(gl.TEXTURE_2D, earth.texture2);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+// 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-night-lights"));
+// 	gl.generateMipmap(gl.TEXTURE_2D);
+// 	gl.bindTexture(gl.TEXTURE_2D, null);
 
-	earth.texture3 = gl.createTexture();
-	gl.activeTexture(gl.TEXTURE3);
-	gl.bindTexture(gl.TEXTURE_2D, earth.texture3);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-ocean-mask"));
-	gl.generateMipmap(gl.TEXTURE_2D);
-	gl.bindTexture(gl.TEXTURE_2D, null);
+// 	earth.texture3 = gl.createTexture();
+// 	gl.activeTexture(gl.TEXTURE3);
+// 	gl.bindTexture(gl.TEXTURE_2D, earth.texture3);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+// 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("earth-ocean-mask"));
+// 	gl.generateMipmap(gl.TEXTURE_2D);
+// 	gl.bindTexture(gl.TEXTURE_2D, null);
 
-	earth.draw = function(positionAttribLocation, texCoordAttribLocation, normalAttribLocation) {
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
-		gl.vertexAttribPointer(
-			positionAttribLocation, // Attribute location
-			3, // Number of elements per attribute
-			gl.FLOAT, // Type of elements
-			gl.FALSE,
-			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-			0 // Offset from the beginning of a single vertex to this attribute
-		);
-		gl.vertexAttribPointer(
-			texCoordAttribLocation, // Attribute location
-			2, // Number of elements per attribute
-			gl.FLOAT, // Type of elements
-			gl.FALSE,
-			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-			3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
-		);
-		gl.vertexAttribPointer(
-			normalAttribLocation, // Attribute location
-			3, // Number of elements per attribute
-			gl.FLOAT, // Type of elements
-			gl.FALSE,
-			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
-		);
+// 	earth.draw = function(positionAttribLocation, texCoordAttribLocation, normalAttribLocation) {
+// 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
+// 		gl.vertexAttribPointer(
+// 			positionAttribLocation, // Attribute location
+// 			3, // Number of elements per attribute
+// 			gl.FLOAT, // Type of elements
+// 			gl.FALSE,
+// 			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+// 			0 // Offset from the beginning of a single vertex to this attribute
+// 		);
+// 		gl.vertexAttribPointer(
+// 			texCoordAttribLocation, // Attribute location
+// 			2, // Number of elements per attribute
+// 			gl.FLOAT, // Type of elements
+// 			gl.FALSE,
+// 			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+// 			3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+// 		);
+// 		gl.vertexAttribPointer(
+// 			normalAttribLocation, // Attribute location
+// 			3, // Number of elements per attribute
+// 			gl.FLOAT, // Type of elements
+// 			gl.FALSE,
+// 			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+// 			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+// 		);
 
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, earth.texture0);
-		gl.activeTexture(gl.TEXTURE1);
-		gl.bindTexture(gl.TEXTURE_2D, earth.texture1);
-		gl.activeTexture(gl.TEXTURE2);
-		gl.bindTexture(gl.TEXTURE_2D, earth.texture2);
-		gl.activeTexture(gl.TEXTURE3);
-		gl.bindTexture(gl.TEXTURE_2D, earth.texture3);
+// 		gl.activeTexture(gl.TEXTURE0);
+// 		gl.bindTexture(gl.TEXTURE_2D, earth.texture0);
+// 		gl.activeTexture(gl.TEXTURE1);
+// 		gl.bindTexture(gl.TEXTURE_2D, earth.texture1);
+// 		gl.activeTexture(gl.TEXTURE2);
+// 		gl.bindTexture(gl.TEXTURE_2D, earth.texture2);
+// 		gl.activeTexture(gl.TEXTURE3);
+// 		gl.bindTexture(gl.TEXTURE_2D, earth.texture3);
 
-		gl.enableVertexAttribArray(positionAttribLocation);
-		gl.enableVertexAttribArray(texCoordAttribLocation);
-		gl.enableVertexAttribArray(normalAttribLocation);
+// 		gl.enableVertexAttribArray(positionAttribLocation);
+// 		gl.enableVertexAttribArray(texCoordAttribLocation);
+// 		gl.enableVertexAttribArray(normalAttribLocation);
 
-		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/8);
+// 		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/8);
 		
-		gl.disableVertexAttribArray(positionAttribLocation);
-		gl.disableVertexAttribArray(texCoordAttribLocation);
-		gl.disableVertexAttribArray(normalAttribLocation);
-		gl.bindBuffer(gl.ARRAY_BUFFER, null);
-	}
-	return earth;
-}
+// 		gl.disableVertexAttribArray(positionAttribLocation);
+// 		gl.disableVertexAttribArray(texCoordAttribLocation);
+// 		gl.disableVertexAttribArray(normalAttribLocation);
+// 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+// 	}
+// 	return earth;
+// }
 
 async function createSpaceship(gl) {
 	let spaceship = {};
@@ -363,113 +363,277 @@ async function createTeapot(gl) {
 	return teapot;
 }
 
-function createBox(gl) {
-	var box = {};
+// async function createBox(gl) {
+// 	var box = {};
 
-	var vertices =
-	[ // X, Y, Z           R, G, B, A
-		// Top
-		-1.0, 1.0, -1.0,   0.5, 0.5, 0.5, 1.0,
-		-1.0, 1.0, 1.0,    0.5, 0.5, 0.5, 1.0,
-		1.0, 1.0, 1.0,     0.5, 0.5, 0.5, 1.0,
-		1.0, 1.0, -1.0,    0.5, 0.5, 0.5, 1.0,
+// 	var boxVertices = 
+// 	[ // X, Y, Z           U, V
+// 		// Top
+// 		-1.0, 1.0, -1.0,   0, 0,
+// 		-1.0, 1.0, 1.0,    0, 1,
+// 		1.0, 1.0, 1.0,     1, 1,
+// 		1.0, 1.0, -1.0,    1, 0,
 
-		// Left
-		-1.0, 1.0, 1.0,    0.75, 0.25, 0.5, 1.0,
-		-1.0, -1.0, 1.0,   0.75, 0.25, 0.5, 1.0,
-		-1.0, -1.0, -1.0,  0.75, 0.25, 0.5, 1.0,
-		-1.0, 1.0, -1.0,   0.75, 0.25, 0.5, 1.0,
+// 		// Left
+// 		-1.0, 1.0, 1.0,    0, 0,
+// 		-1.0, -1.0, 1.0,   1, 0,
+// 		-1.0, -1.0, -1.0,  1, 1,
+// 		-1.0, 1.0, -1.0,   0, 1,
 
-		// Right
-		1.0, 1.0, 1.0,    0.25, 0.25, 0.75, 1.0,
-		1.0, -1.0, 1.0,   0.25, 0.25, 0.75, 1.0,
-		1.0, -1.0, -1.0,  0.25, 0.25, 0.75, 1.0,
-		1.0, 1.0, -1.0,   0.25, 0.25, 0.75, 1.0,
+// 		// Right
+// 		1.0, 1.0, 1.0,    1, 1,
+// 		1.0, -1.0, 1.0,   0, 1,
+// 		1.0, -1.0, -1.0,  0, 0,
+// 		1.0, 1.0, -1.0,   1, 0,
 
-		// Front
-		1.0, 1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
-		1.0, -1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
-		-1.0, -1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
-		-1.0, 1.0, 1.0,    1.0, 0.0, 0.15, 1.0,
+// 		// Front
+// 		1.0, 1.0, 1.0,    1, 1,
+// 		1.0, -1.0, 1.0,    1, 0,
+// 		-1.0, -1.0, 1.0,    0, 0,
+// 		-1.0, 1.0, 1.0,    0, 1,
 
-		// Back
-		1.0, 1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
-		1.0, -1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
-		-1.0, -1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
-		-1.0, 1.0, -1.0,    0.0, 1.0, 0.15, 1.0,
+// 		// Back
+// 		1.0, 1.0, -1.0,    0, 0,
+// 		1.0, -1.0, -1.0,    0, 1,
+// 		-1.0, -1.0, -1.0,    1, 1,
+// 		-1.0, 1.0, -1.0,    1, 0,
 
-		// Bottom
-		-1.0, -1.0, -1.0,   0.5, 0.5, 1.0, 1.0,
-		-1.0, -1.0, 1.0,    0.5, 0.5, 1.0, 1.0,
-		1.0, -1.0, 1.0,     0.5, 0.5, 1.0, 1.0,
-		1.0, -1.0, -1.0,    0.5, 0.5, 1.0, 1.0,
-	];
+// 		// Bottom
+// 		-1.0, -1.0, -1.0,   1, 1,
+// 		-1.0, -1.0, 1.0,    1, 0,
+// 		1.0, -1.0, 1.0,     0, 0,
+// 		1.0, -1.0, -1.0,    0, 1
+// 	];
 
-	var indices =
-	[
-		// Front
-		13, 12, 14,
-		15, 14, 12,
+// 	var boxIndices =
+// 	[
+// 		// Top
+// 		0, 1, 2,
+// 		0, 2, 3,
 
-		// Top
-		0, 1, 2,
-		0, 2, 3,
+// 		// Left
+// 		5, 4, 6,
+// 		6, 4, 7,
 
-		// Left
-		5, 4, 6,
-		6, 4, 7,
+// 		// Right
+// 		8, 9, 10,
+// 		8, 10, 11,
 
-		// Right
-		8, 9, 10,
-		8, 10, 11,
+// 		// Front
+// 		13, 12, 14,
+// 		15, 14, 12,
 
-		// Back
-		16, 17, 18,
-		16, 18, 19,
+// 		// Back
+// 		16, 17, 18,
+// 		16, 18, 19,
 
-		// Bottom
-		21, 20, 22,
-		22, 20, 23
-	];
+// 		// Bottom
+// 		21, 20, 22,
+// 		22, 20, 23
+// 	];
 
-	box.vertexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, box.vertexBufferObject);
+// 	box.vertexBufferObject = gl.createBuffer();
+// 	gl.bindBuffer(gl.ARRAY_BUFFER, box.vertexBufferObject);
+// 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
+// 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+// 	box.indexBufferObject = gl.createBuffer();
+// 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, box.indexBufferObject);
+// 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
+// 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
+// 	box.texture0 = gl.createTexture();
+// 	gl.activeTexture(gl.TEXTURE0);
+// 	gl.bindTexture(gl.TEXTURE_2D, box.texture0);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+// 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+// 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("crate-image"));
+// 	gl.generateMipmap(gl.TEXTURE_2D);
+// 	gl.bindTexture(gl.TEXTURE_2D, null);
+
+// 	box.draw = function() {
+// 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
+// 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBufferObject);
+
+// 		const positionAttribLocation = gl.getAttribLocation(this.program, 'vPosition');
+// 		gl.vertexAttribPointer(
+// 			positionAttribLocation, // Attribute location
+// 			3, // Number of elements per attribute
+// 			gl.FLOAT, // Type of elements
+// 			gl.FALSE,
+// 			5 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+// 			0 // Offset from the beginning of a single vertex to this attribute
+// 			);
+// 		gl.enableVertexAttribArray(positionAttribLocation);
+
+// 		const texCoordAtrribLocation = gl.getAttribLocation(this.program, 'vTexCoord');
+// 		gl.vertexAttribPointer(
+// 			texCoordAtrribLocation, // Attribute location
+// 			2, // Number of elements per attribute
+// 			gl.FLOAT, // Type of elements
+// 			gl.FALSE,
+// 			5 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+// 			3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+// 			);
+// 		gl.enableVertexAttribArray(texCoordAtrribLocation);
+		
+// 		gl.activeTexture(gl.TEXTURE0);
+// 		gl.bindTexture(gl.TEXTURE_2D, box.texture0);
+		
+// 		const samplerUniformLocation = gl.getUniformLocation(this.program, 'sampler');
+// 		gl.uniform1i(samplerUniformLocation, 0);
+		
+
+// 		gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+// 		// gl.drawArrays(gl.TRIANGLES, 0, boxVertices.length/5);
+
+// 		gl.disableVertexAttribArray(positionAttribLocation);
+// 		gl.disableVertexAttribArray(texCoordAtrribLocation);
+// 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+// 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+// 	}
+// 	return box;
+// }
+
+async function createAsteroid(gl) {
+	var asteroid = {};
+
+	const vertices = await fetchModel('./objects/asteroid.obj')
+
+	asteroid.vertexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, asteroid.vertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-	box.indexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, box.indexBufferObject);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	asteroid.texture0 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, asteroid.texture0);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("asteroid-base"));
+	gl.generateMipmap(gl.TEXTURE_2D);
+	gl.bindTexture(gl.TEXTURE_2D, null);
 
-	box.draw = function(positionAttribLocation, colorAttribLocation) {
+	asteroid.texture1 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, asteroid.texture1);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("asteroid-normal"));
+	gl.generateMipmap(gl.TEXTURE_2D);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	asteroid.texture2 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, asteroid.texture2);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("asteroid-roughness"));
+	gl.generateMipmap(gl.TEXTURE_2D);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	asteroid.texture3 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, asteroid.texture3);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("asteroid-ambient"));
+	gl.generateMipmap(gl.TEXTURE_2D);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	asteroid.texture4 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, asteroid.texture4);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("asteroid-height"));
+	gl.generateMipmap(gl.TEXTURE_2D);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	asteroid.draw = function() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBufferObject);
+
+		const positionAttribLocation = gl.getAttribLocation(this.program, 'vPosition');
+		const texCoordAttribLocation = gl.getAttribLocation(this.program, 'vTexCoord');
+		const normalAttribLocation = gl.getAttribLocation(this.program, 'vNormal');
 		gl.vertexAttribPointer(
 			positionAttribLocation, // Attribute location
 			3, // Number of elements per attribute
 			gl.FLOAT, // Type of elements
 			gl.FALSE,
-			7 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
 			0 // Offset from the beginning of a single vertex to this attribute
 		);
 		gl.vertexAttribPointer(
-			colorAttribLocation, // Attribute location
-			4, // Number of elements per attribute
+			texCoordAttribLocation, // Attribute location
+			2, // Number of elements per attribute
 			gl.FLOAT, // Type of elements
 			gl.FALSE,
-			7 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
 			3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 		);
+		gl.vertexAttribPointer(
+			normalAttribLocation, // Attribute location
+			3, // Number of elements per attribute
+			gl.FLOAT, // Type of elements
+			gl.FALSE,
+			8 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+			5 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+		);
+			
 		gl.enableVertexAttribArray(positionAttribLocation);
-		gl.enableVertexAttribArray(colorAttribLocation);
-		gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+		gl.enableVertexAttribArray(texCoordAttribLocation);
+		gl.enableVertexAttribArray(normalAttribLocation);
+
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, asteroid.texture0);
+		gl.activeTexture(gl.TEXTURE1);
+		gl.bindTexture(gl.TEXTURE_2D, asteroid.texture1);
+		gl.activeTexture(gl.TEXTURE2);
+		gl.bindTexture(gl.TEXTURE_2D, asteroid.texture2);
+		gl.activeTexture(gl.TEXTURE3);
+		gl.bindTexture(gl.TEXTURE_2D, asteroid.texture3);
+		gl.activeTexture(gl.TEXTURE4);
+		gl.bindTexture(gl.TEXTURE_2D, asteroid.texture4);
+		
+		const samplerBaseLocation = gl.getUniformLocation(this.program, 'sBase');
+		gl.uniform1i(samplerBaseLocation, 0);
+		const samplerNormalLocation = gl.getUniformLocation(this.program, 'sNormal');
+		gl.uniform1i(samplerNormalLocation, 1);
+		const samplerRoughnessLocation = gl.getUniformLocation(this.program, 'sRoughness');
+		gl.uniform1i(samplerRoughnessLocation, 2);
+		const samplerAmbientLocation = gl.getUniformLocation(this.program, 'sAmbient');
+		gl.uniform1i(samplerAmbientLocation, 3);
+		const samplerHeightLocation = gl.getUniformLocation(this.program, 'sHeight');
+		gl.uniform1i(samplerHeightLocation, 4);
+		
+		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/5);
+
 		gl.disableVertexAttribArray(positionAttribLocation);
-		gl.disableVertexAttribArray(colorAttribLocation);
+		gl.disableVertexAttribArray(texCoordAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	}
-	return box;
+	return asteroid;
+}
+
+function createAsteroidTexture(gl) {
+	const asteroidTexture = gl.createTexture();
+
+	gl.activeTexture(TEXTURE1);
+	gl.bindTexture(gl.TEXTURE_2D, asteroidTexture);		
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);	
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		document.getElementById('crate-image'));
+	gl.generateMipmap(gl.TEXTURE_2D);	
+
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
+	return asteroidTexture;
 }
 
 async function InitDemo() {
@@ -487,8 +651,9 @@ async function InitDemo() {
 		return;
 	}
 
-	// Create Skybox texture
+	// Create textures
 	const texture = createSkyBoxTexture(gl);
+	// const asteroidTexture = createAsteroidTexture(gl);
 
 	// Create skybox
 	console.log('Creating skybox ...');
@@ -515,8 +680,28 @@ async function InitDemo() {
 	const spaceship = await createSpaceship(gl);
 	spaceship.texture = texture;
 	spaceship.program = await createShaderProgram(gl, './shaders/spaceship_vert.glsl', './shaders/spaceship_frag.glsl');
-	if (!teapot.program) {
+	if (!spaceship.program) {
 		console.error('spaceship Cannot run without shader program!');
+		return;
+	}
+
+	// // Create box
+	// console.log('Creating box object ... ');
+	// const box = await createBox(gl);
+	// // box.texture = asteroidTexture;
+	// box.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
+	// if (!box.program) {
+	// 	console.error('box Cannot run without shader program!');
+	// 	return;
+	// }
+
+	// Create asteroid
+	console.log('Creating asteroid object ... ');
+	const asteroid = await createAsteroid(gl);
+	// asteroid.texture = asteroidTexture;
+	asteroid.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
+	if (!asteroid.program) {
+		console.error('asteroid Cannot run without shader program!');
 		return;
 	}
 
@@ -525,14 +710,6 @@ async function InitDemo() {
 	// const earth = await createEarth(gl);
 	// earth.texture = texture;
 	// earth.program = await createShaderProgram
-
-	// // Create shaders
-	// console.log('Creating shaders ...');
-	// const program = await createShaderProgram(gl, 'teapot_vert.glsl', 'teapot_frag.glsl');
-	// if (!program) {
-	// 	console.error('Cannot run without shader program!');
-	// 	return;
-	// }
 
 	// Configure OpenGL state machine
 	gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -601,6 +778,41 @@ async function InitDemo() {
 
 		spaceship.draw();
 		
+		// // Draw box
+		// gl.useProgram(box.program);
+		// mat4.identity(worldMatrix);
+		// mat4.translate(worldMatrix, worldMatrix, [3.0, 0.0, 3.0]);
+
+		// matProjUniformLocation = gl.getUniformLocation(box.program, 'mProj');
+		// gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		// matViewUniformLocation = gl.getUniformLocation(box.program, 'mView');
+		// gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+
+		// matWorldUniformLocation = gl.getUniformLocation(box.program, 'mWorld');
+		// gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		// box.draw();
+
+		// Draw Asteroid
+		gl.useProgram(asteroid.program);
+		
+		const shiftUniformLocation = gl.getUniformLocation(asteroid.program, "shift");
+		gl.uniform1f(shiftUniformLocation, angle/30);
+
+		mat4.identity(worldMatrix);
+		mat4.translate(worldMatrix, worldMatrix, [3.0, 0.0, 3.0]);
+
+		matProjUniformLocation = gl.getUniformLocation(asteroid.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		matViewUniformLocation = gl.getUniformLocation(asteroid.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+
+		matWorldUniformLocation = gl.getUniformLocation(asteroid.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		asteroid.draw();
 
 		requestAnimationFrame(loop);
 	};
