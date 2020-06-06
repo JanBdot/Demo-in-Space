@@ -727,8 +727,13 @@ async function InitDemo() {
 	const loop = function () {
 		// Viewmatrix
 		const angle = performance.now() / 1000 / 6 * 2 * Math.PI;
-		mat4.lookAt(viewMatrix, [0, 3, 15], [0, 0, 0], [0, 1, 0]);
-		mat4.rotate(viewMatrix, viewMatrix, angle/4, [0, 1, 0]);
+
+		var camPoAbsVal= Math.sqrt((mouseXposition*mouseXposition)+(mouseYposition*mouseYposition)+15*15);
+		var camDistance =15;
+		var cameraPosition = [camDistance*mouseXposition/camPoAbsVal, camDistance*mouseYposition/camPoAbsVal, camDistance*15/camPoAbsVal];
+
+		mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle/4, [0, 1, 0]);
 		// mat4.lookAt(viewMatrix, [0, 3, 100], [0, 10, 0], [0, 1, 0]);
 		// mat4.rotate(viewMatrix, viewMatrix, angle/50, [0, 1, 0]);
 		// mat4.rotate(viewMatrix, viewMatrix, angle/3, [0, 0, 1]);
@@ -820,3 +825,13 @@ async function InitDemo() {
 	console.log('Entering rendering loop ...')
 	requestAnimationFrame(loop);
 }
+
+var mouseXposition=0;
+var mouseYposition=0;
+window.addEventListener('mousemove',function(e){
+	mouseXposition = -(e.clientX - this.screen.width/2)/10;
+	mouseYposition = (e.clientY - this.screen.height/2)/10;
+  })
+window.addEventListener('scroll',function(e){
+	this.console.log(e);
+})  
