@@ -729,7 +729,6 @@ async function InitDemo() {
 		const angle = performance.now() / 1000 / 6 * 2 * Math.PI;
 
 		var camPoAbsVal= Math.sqrt((mouseXposition*mouseXposition)+(mouseYposition*mouseYposition)+15*15);
-		var camDistance =15;
 		var cameraPosition = [camDistance*mouseXposition/camPoAbsVal, camDistance*mouseYposition/camPoAbsVal, camDistance*15/camPoAbsVal];
 
 		mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
@@ -828,10 +827,17 @@ async function InitDemo() {
 
 var mouseXposition=0;
 var mouseYposition=0;
+var camDistance =15;
+
 window.addEventListener('mousemove',function(e){
 	mouseXposition = -(e.clientX - this.screen.width/2)/10;
 	mouseYposition = (e.clientY - this.screen.height/2)/10;
   })
-window.addEventListener('scroll',function(e){
-	this.console.log(e);
-})  
+
+
+window.addEventListener('wheel',function(e) {
+	
+	if (camDistance + e.deltaY/20 >10) {
+		camDistance+= e.deltaY/20;		
+	}	
+})
