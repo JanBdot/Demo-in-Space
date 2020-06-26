@@ -5,9 +5,18 @@
 		<meta charset="UTF-8">
 		<script src="./javaScript/gl-matrix.js"></script>
 		<script src="./javaScript/app.js"></script>
+		<script src="./javaScript/fetchModel.js"></script>
+		<script src="./javaScript/createShaderPrograms.js"></script>
+		<script src="./javaScript/createPrimitives/createSkybox.js"></script>
+		<script src="./javaScript/createPrimitives/createEarth.js"></script>
+		<script src="./javaScript/createPrimitives/createSpaceship.js"></script>
+		<script src="./javaScript/createPrimitives/createTeapot.js"></script>
+		<script src="./javaScript/createPrimitives/createBox.js"></script>
+		<script src="./javaScript/createPrimitives/createAsteroid.js"></script>
 	</head>
 	<body>
 		<canvas id="cg1-canvas" width="1024" height="768"></canvas>
+
 		<img id="sb-right" src="sourceimages/skybox/right.png" width="0" height="0"></img>
 		<img id="sb-left" src="sourceimages/skybox/left.png" width="0" height="0"></img>
 		<img id="sb-top" src="sourceimages/skybox/top.png" width="0" height="0"></img>
@@ -20,5 +29,10 @@
 		<img id="asteroid-roughness" src="sourceimages/asteroid/Rock_039_roughness.jpg" width="0" height="0"></img>
 		<img id="asteroid-ambient" src="sourceimages/asteroid/Rock_039_ambientOcclusion.jpg" width="0" height="0"></img>
 		<img id="asteroid-height" src="sourceimages/asteroid/Rock_039_height.png" width="0" height="0"></img>
+		<img id="asteroid2-diffuse" src="sourceimages/asteroid/rock_06_diff_1k.png" width="0" height="0"></img>
+		<img id="asteroid2-bump" src="sourceimages/asteroid/rock_06_bump_1k.png" width="0" height="0"></img>
+		<img id="asteroid2-normal" src="sourceimages/asteroid/rock_06_nor_1k.png" width="0" height="0"></img>
+		<img id="moon-bump" src="sourceimages/moon/moonbump1k.jpg" width="0" height="0"></img>
+		<img id="moon-base" src="sourceimages/moon/moonmap1k.jpg" width="0" height="0"></img>
 	</body>
 </html>
