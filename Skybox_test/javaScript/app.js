@@ -18,13 +18,14 @@ async function InitDemo() {
 	}
 
 	// Create textures
-	const texture = createSkyBoxTexture(gl);
+	const textureSkybox = createSkyBoxTexture(gl);
+	const textureSkyboxNoPointStars = createSkyBoxNoPointStarsTexture(gl);
 	// const asteroidTexture = createAsteroidTexture(gl);
 
 	// Create skybox
 	console.log('Creating skybox ...');
 	const skybox = createSkyBox(gl);
-	skybox.texture = texture;
+	skybox.texture = textureSkybox;
 	skybox.program = await createShaderProgram(gl, './shaders/skybox_vert.glsl', './shaders/skybox_frag.glsl');
 	if (!skybox.program) {
 		console.error('Cannot run without shader program!');
@@ -34,7 +35,7 @@ async function InitDemo() {
 	// Create teapot object
 	console.log('Creating teapot object ...');
 	const teapot = await createTeapot(gl);
-	teapot.texture = texture;
+	teapot.texture = textureSkybox;
 	teapot.program = await createShaderProgram(gl, './shaders/teapot_vert.glsl', './shaders/teapot_frag.glsl');
 	if (!teapot.program) {
 		console.error('Cannot run without shader program!');
@@ -44,7 +45,7 @@ async function InitDemo() {
 	// Create spaceship object
 	console.log('Creating spaceship object ...');
 	const spaceship = await createSpaceship(gl);
-	spaceship.texture = texture;
+	spaceship.texture = textureSkyboxNoPointStars;
 	spaceship.program = await createShaderProgram(gl, './shaders/spaceship_vert.glsl', './shaders/spaceship_frag.glsl');
 	if (!spaceship.program) {
 		console.error('spaceship Cannot run without shader program!');
@@ -139,7 +140,7 @@ async function InitDemo() {
 		let matWorldUniformLocation = gl.getUniformLocation(skybox.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		skybox.draw();
+		skybox.draw(textureSkybox);
 		
 		// draw spaceship
 		gl.enable(gl.DEPTH_TEST);

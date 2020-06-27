@@ -45,18 +45,25 @@ function createSkyBox(gl) {
 			3 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
 			0 // Offset from the beginning of a single vertex to this attribute
 		);
+
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+
 		gl.enableVertexAttribArray(positionAttribLocation);
 		gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 		gl.disableVertexAttribArray(positionAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	}
+
+
 	return box;
 }
 
 function createSkyBoxTexture(gl) {
-	const texture = gl.createTexture();
-	gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+	const texture0 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture0);
 	gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X,
 		0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
 		document.getElementById('sb-right'));
@@ -86,5 +93,41 @@ function createSkyBoxTexture(gl) {
 
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
 
-	return texture;
+	return texture0;
+}
+
+function createSkyBoxNoPointStarsTexture(gl) {
+	const texture1 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE1);
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture1);
+	gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+		0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		document.getElementById('sbNoPointStars-right'));
+	gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+		0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		document.getElementById('sbNoPointStars-left'));
+	gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+		0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		document.getElementById('sbNoPointStars-top'));
+	gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+		0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		document.getElementById('sbNoPointStars-bottom'));
+	gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+		0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		document.getElementById('sbNoPointStars-front'));
+	gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+		0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+		document.getElementById('sbNoPointStars-back'));
+
+
+
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	// gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE); 
+
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+
+	return texture1;
 }
