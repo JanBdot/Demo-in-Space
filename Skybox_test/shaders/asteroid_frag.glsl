@@ -26,7 +26,7 @@ void main()
 {
 	vec3 objectColor = texture2D(diffuseMap, fTexCoord).rgb;
 
-	float ambientStrength = 0.15;
+	float ambientStrength = 0.1;
 	vec3 ambient = ambientStrength * light.ambient;
 
 	vec3 lightDir = normalize(fLightDir);

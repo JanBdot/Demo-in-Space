@@ -16,7 +16,7 @@ varying vec3 fLightDir;
 
 void main()
 {
-    vec3 lightDir = vec3(0.0, 0.0, 1.0);
+    vec3 lightDir = vec3(100.0, 0.0, -50.0);
     // fragPos = vec3(mWorld * vec4(vPosition, 1.0));
     fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
     // fTexCoord = vTexCoord;
