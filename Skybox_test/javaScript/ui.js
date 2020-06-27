@@ -1,6 +1,10 @@
 function showNormalMappingFunc(gl, program, showNormalMapping){
     let normalMappingUniformLocation = gl.getUniformLocation(program, 'showNormalMapping');
     const button = document.getElementById('showNormalMappingButton');
+
+    console.log(createRandomAsteroidSeed());
+    
+    
     if (showNormalMapping) {
         gl.uniform1i(normalMappingUniformLocation, 1);
         button.innerHTML = "hide NormalMapping";

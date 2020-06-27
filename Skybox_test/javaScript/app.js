@@ -86,12 +86,22 @@ async function InitDemo() {
 	gl.useProgram(asteroid.program);
 	showNormalMappingFunc(gl, asteroid.program, true);
 
+	document.getElementById('createAsteroidButton').addEventListener("click", function() {
+		seedList.push(createRandomAsteroidSeed());
+		console.log(seedList);
+		
+	});
 
-	// // Create earth objects
-	// console.log('Creating earth objects ...');
-	// const earth = await createEarth(gl);
+
+	// Create earth objects
+	console.log('Creating earth objects ...');
+	const earth = await createEarth(gl);
 	// earth.texture = texture;
-	// earth.program = await createShaderProgram
+	earth.program = await createShaderProgram(gl, './shaders/earth_vert.glsl', './shaders/earth_frag.glsl');
+	if (!asteroid.program) {
+		console.error('earth Cannot run without shader program!');
+		return;
+	}
 
 	// Configure OpenGL state machine
 	gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -106,11 +116,18 @@ async function InitDemo() {
 	const normalMatrix = new Float32Array(9);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
+	const seedList = [];
+	const asteroidSeed1 = createRandomAsteroidSeed();
+	const asteroidSeed2 = createRandomAsteroidSeed();
+	const asteroidSeed3 = createRandomAsteroidSeed();
+	const asteroidSeed4 = createRandomAsteroidSeed();
+	seedList.push(asteroidSeed1, asteroidSeed2, asteroidSeed3, asteroidSeed4);
+
 	
 	// Main render loop
 	const loop = function () {
 		// Viewmatrix
-		const angle = performance.now() / 1000 / 6 * 2 * Math.PI;
+		const angle = performance.now() / 3000 / 6 * 2 * Math.PI;
 		
 		var camPoAbsVal= Math.sqrt((mouseXposition*mouseXposition)+(mouseYposition*mouseYposition)+15*15);
 		var cameraPosition = [camDistance*mouseXposition/camPoAbsVal, camDistance*mouseYposition/camPoAbsVal, camDistance*15/camPoAbsVal];
@@ -128,6 +145,13 @@ async function InitDemo() {
 		// draw skybox
 		// gl.depthMask(false);
 		gl.disable(gl.DEPTH_TEST);
+
+
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Skybox
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
 		gl.useProgram(skybox.program);
 		
 		let matProjUniformLocation = gl.getUniformLocation(skybox.program, 'mProj');
@@ -141,8 +165,15 @@ async function InitDemo() {
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
 		skybox.draw(textureSkybox);
+		// ########################################################################
+		// ########################################################################
 		
-		// draw spaceship
+		
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Spaceship
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
 		gl.enable(gl.DEPTH_TEST);
 		gl.useProgram(spaceship.program);
 		
@@ -166,29 +197,60 @@ async function InitDemo() {
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
 		spaceship.draw();
+		// ########################################################################
+		// ########################################################################
 		
-		// // Draw box
-		// gl.useProgram(box.program);
-		// mat4.identity(worldMatrix);
-		// mat4.translate(worldMatrix, worldMatrix, [3.0, 0.0, 3.0]);
-		
-		// matProjUniformLocation = gl.getUniformLocation(box.program, 'mProj');
-		// gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		// matViewUniformLocation = gl.getUniformLocation(box.program, 'mView');
-		// gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-		
-		// matWorldUniformLocation = gl.getUniformLocation(box.program, 'mWorld');
-		// gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// box.draw();
 		
 		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Earth
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		gl.useProgram(earth.program);
+		
+		const samplerDayLocation = gl.getUniformLocation(earth.program, "sDay");
+		gl.uniform1i(samplerDayLocation, 0);
+		const samplerNightLocation = gl.getUniformLocation(earth.program, "sNight");
+		gl.uniform1i(samplerNightLocation, 1);
+		const samplerOceanLocation = gl.getUniformLocation(earth.program, "sOcean");
+		gl.uniform1i(samplerOceanLocation, 2);
+		const samplerCloudLocation = gl.getUniformLocation(earth.program, "sClouds");
+		gl.uniform1i(samplerCloudLocation, 3);
+		
+		const shiftUniformLocation = gl.getUniformLocation(earth.program, 'shift');
+		gl.uniform1f(shiftUniformLocation, angle/90);
+		
+		matProjUniformLocation = gl.getUniformLocation(earth.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		matViewUniformLocation = gl.getUniformLocation(earth.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+		
+		matWorldUniformLocation = gl.getUniformLocation(earth.program, 'mWorld');
+		
+		mat4.identity(worldMatrix);
+		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -200.0]);
+		mat4.scale(worldMatrix, worldMatrix, [100.0, 100.0, 100.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle/12, [0, 1, 0]);
+		
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+		earth.draw();
+		// ########################################################################
+		// ########################################################################
+		
+		
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
 		// Draw Asteroid
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
 		gl.useProgram(asteroid.program);
 		
 		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [3.0, 0.0, 3.0]);
+		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -200.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle, [0, -1.0, 0.0]);
+		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 185.0]);
+		// mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -500.0]);
 		
 		matProjUniformLocation = gl.getUniformLocation(asteroid.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -197,8 +259,9 @@ async function InitDemo() {
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 		
 		matWorldUniformLocation = gl.getUniformLocation(asteroid.program, 'mWorld');
-        mat4.scale(worldMatrix, worldMatrix, [3.0, 3.0, 3.0]);
-        mat4.rotate(worldMatrix, worldMatrix, angle/4, [1, 0.5, 0]);
+        mat4.scale(worldMatrix, worldMatrix, [10.0, 10.0, 10.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle/2, [1, 0.5, 1]);
+		
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
 		const matNormalUniformLocation = gl.getUniformLocation(asteroid.program, 'mNormal');
@@ -218,7 +281,31 @@ async function InitDemo() {
 		gl.uniform3f(lightPosLoc, lampPos.x, lampPos.y, lampPos.z);
 		
 		asteroid.draw();
+		// ########################################################################
+		// ########################################################################
+
 		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Asteroid
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		gl.useProgram(asteroid.program);
+
+		seedList.forEach(asteroidSeed => {			
+			mat4.identity(worldMatrix);		
+			mat4.multiply(worldMatrix, worldMatrix, createRandomPositionAstroid(-200.0, angle, asteroidSeed));
+			gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+			
+			// const matNormalUniformLocation = gl.getUniformLocation(asteroid.program, 'mNormal');
+			mat4.invert(worldMatrix, worldMatrix);
+			mat4.transpose(worldMatrix, worldMatrix);
+			mat3.fromMat4(normalMatrix, worldMatrix);
+			gl.uniformMatrix3fv(matNormalUniformLocation, gl.FALSE, normalMatrix);
+			
+			asteroid.draw();			
+		});
+		// ########################################################################
+		// ########################################################################
 		
 		requestAnimationFrame(loop);
 	};

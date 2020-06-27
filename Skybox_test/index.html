@@ -6,6 +6,7 @@
 		<script src="./javaScript/gl-matrix.js"></script>
 		<script src="./javaScript/app.js"></script>
 		<script src="./javaScript/ui.js"></script>
+		<script src="./javaScript/asteroid.js"></script>
 		<script src="./javaScript/fetchModel.js"></script>
 		<script src="./javaScript/createShaderPrograms.js"></script>
 		<script src="./javaScript/createPrimitives/createSkybox.js"></script>
@@ -16,9 +17,10 @@
 		<script src="./javaScript/createPrimitives/createAsteroid.js"></script>
 	</head>
 	<body>
-		<canvas id="cg1-canvas" width="1024" height="768"></canvas>
+		<canvas id="cg1-canvas" width="1024" height="768"></canvas> <br>
 
-		<button id="showNormalMappingButton"></button>
+		<button id="showNormalMappingButton"></button> <br>
+		<button id="createAsteroidButton">Create Asteroid</button>
 
 		<img id="sb-right" src="sourceimages/skybox/skybox_all/right.png" width="0" height="0"></img>
 		<img id="sb-left" src="sourceimages/skybox/skybox_all/left.png" width="0" height="0"></img>
@@ -33,15 +35,26 @@
 		<img id="sbNoPointStars-back" src="sourceimages/skybox/skybox_noPointStars/back.png" width="0" height="0"></img>
 		<img id="sbNoPointStars-front" src="sourceimages/skybox/skybox_noPointStars/front.png" width="0" height="0"></img>
 		<img id="crate-image" src="sourceimages/RTS_Crate.png" width="0" height="0"></img>
-		<img id="asteroid-base" src="sourceimages/asteroid/Rock_039_baseColor.jpg" width="0" height="0"></img>
-		<img id="asteroid-normal" src="sourceimages/asteroid/Rock_039_normal.jpg" width="0" height="0"></img>
-		<img id="asteroid-roughness" src="sourceimages/asteroid/Rock_039_roughness.jpg" width="0" height="0"></img>
-		<img id="asteroid-ambient" src="sourceimages/asteroid/Rock_039_ambientOcclusion.jpg" width="0" height="0"></img>
-		<img id="asteroid-height" src="sourceimages/asteroid/Rock_039_height.png" width="0" height="0"></img>
+		<img id="asteroid1-diffuse" src="sourceimages/asteroid/Rock_039_baseColor.jpg" width="0" height="0"></img>
+		<img id="asteroid1-normal" src="sourceimages/asteroid/Rock_039_normal.jpg" width="0" height="0"></img>
+		<img id="asteroi1d-roughness" src="sourceimages/asteroid/Rock_039_roughness.jpg" width="0" height="0"></img>
+		<img id="asteroid1-ambient" src="sourceimages/asteroid/Rock_039_ambientOcclusion.jpg" width="0" height="0"></img>
+		<img id="asteroid1-height" src="sourceimages/asteroid/Rock_039_height.png" width="0" height="0"></img>
 		<img id="asteroid2-diffuse" src="sourceimages/asteroid/rock_06_diff_1k.png" width="0" height="0"></img>
 		<img id="asteroid2-bump" src="sourceimages/asteroid/rock_06_bump_1k.png" width="0" height="0"></img>
 		<img id="asteroid2-normal" src="sourceimages/asteroid/rock_06_nor_1k.png" width="0" height="0"></img>
+		<img id="asteroid3-diffuse" src="./sourceimages/asteroid/rough_rock/Rough_rock_006_COLOR.png" width="0" height="0"></img>
+		<img id="asteroid3-normal" src="./sourceimages/asteroid/rough_rock/Rough_rock_006_NRM.png" width="0" height="0"></img>
+		<img id="asteroid4-diffuse" src="./sourceimages/asteroid/alien/Abstract_Organic_002_COLOR.jpg" width="0" height="0"></img>
+		<img id="asteroid4-normal" src="./sourceimages/asteroid/alien/Abstract_Organic_002_NORM.jpg" width="0" height="0"></img>
 		<img id="moon-bump" src="sourceimages/moon/moonbump1k.jpg" width="0" height="0"></img>
 		<img id="moon-base" src="sourceimages/moon/moonmap1k.jpg" width="0" height="0"></img>
+		<img id="earth-base" src="sourceimages/earth/2_no_clouds_8k.jpg" width="0" height="0"></img>
+		<img id="earth-bump" src="sourceimages/earth/elev_bump_8k.jpg" width="0" height="0"></img>
+		<img id="earth-albedo" src="sourceimages/earth/earth_albedo.png" width="0" height="0"></img>
+		<img id="earth-clouds" src="sourceimages/earth/earth_clouds.png" width="0" height="0"></img>
+		<img id="earth-night-lights" src="sourceimages/earth/earth_night_lights.png" width="0" height="0"></img>
+		<img id="earth-ocean-mask" src="sourceimages/earth/earth_ocean_mask.png" width="0" height="0"></img>
+
 	</body>
 </html>
