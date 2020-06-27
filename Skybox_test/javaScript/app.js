@@ -70,6 +70,21 @@ async function InitDemo() {
 		console.error('asteroid Cannot run without shader program!');
 		return;
 	}
+	
+	let normalMapping = true;
+	const showNormalMappingButton = document.getElementById('showNormalMappingButton');
+	showNormalMappingButton.addEventListener("click", function() {
+		if (normalMapping){
+			showNormalMappingFunc(gl, asteroid.program, false);
+			normalMapping = false;
+		} else{
+			showNormalMappingFunc(gl, asteroid.program, true);
+			normalMapping = true;
+		}
+	});
+	gl.useProgram(asteroid.program);
+	showNormalMappingFunc(gl, asteroid.program, true);
+
 
 	// // Create earth objects
 	// console.log('Creating earth objects ...');
@@ -89,46 +104,47 @@ async function InitDemo() {
 	const projMatrix = new Float32Array(16);
 	const normalMatrix = new Float32Array(9);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
+
 	
 	// Main render loop
 	const loop = function () {
 		// Viewmatrix
 		const angle = performance.now() / 1000 / 6 * 2 * Math.PI;
-
+		
 		var camPoAbsVal= Math.sqrt((mouseXposition*mouseXposition)+(mouseYposition*mouseYposition)+15*15);
 		var cameraPosition = [camDistance*mouseXposition/camPoAbsVal, camDistance*mouseYposition/camPoAbsVal, camDistance*15/camPoAbsVal];
 		
-
+		
 		mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle/4, [0, 1, 0]);
 		// mat4.lookAt(viewMatrix, [0, 3, 100], [0, 10, 0], [0, 1, 0]);
 		// mat4.rotate(viewMatrix, viewMatrix, angle/50, [0, 1, 0]);
 		// mat4.rotate(viewMatrix, viewMatrix, angle/3, [0, 0, 1]);
-
+		
 		// clear framebuffer
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-
+		
 		// draw skybox
 		// gl.depthMask(false);
 		gl.disable(gl.DEPTH_TEST);
 		gl.useProgram(skybox.program);
-
+		
 		let matProjUniformLocation = gl.getUniformLocation(skybox.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-
+		
 		let matViewUniformLocation = gl.getUniformLocation(skybox.program, 'mView');
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 		
 		mat4.identity(worldMatrix);
 		let matWorldUniformLocation = gl.getUniformLocation(skybox.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
+		
 		skybox.draw();
-
+		
 		// draw spaceship
 		gl.enable(gl.DEPTH_TEST);
 		gl.useProgram(spaceship.program);
-
+		
 		const invViewMatrix = mat3.create();
 		mat3.fromMat4(invViewMatrix, viewMatrix);
 		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
@@ -137,35 +153,35 @@ async function InitDemo() {
 		let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
 		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
 		// console.log("EyeDir: " + eyeDir);
-
+		
 		matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-
+		
 		matViewUniformLocation = gl.getUniformLocation(spaceship.program, 'mView');
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
+		
 		mat4.identity(worldMatrix);
 		matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
+		
 		spaceship.draw();
 		
 		// // Draw box
 		// gl.useProgram(box.program);
 		// mat4.identity(worldMatrix);
 		// mat4.translate(worldMatrix, worldMatrix, [3.0, 0.0, 3.0]);
-
+		
 		// matProjUniformLocation = gl.getUniformLocation(box.program, 'mProj');
 		// gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 		
 		// matViewUniformLocation = gl.getUniformLocation(box.program, 'mView');
 		// gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
+		
 		// matWorldUniformLocation = gl.getUniformLocation(box.program, 'mWorld');
 		// gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
+		
 		// box.draw();
-
+		
 		// ------------------------------------------------------------------------
 		// Draw Asteroid
 		gl.useProgram(asteroid.program);
@@ -209,20 +225,3 @@ async function InitDemo() {
 	console.log('Entering rendering loop ...')
 	requestAnimationFrame(loop);
 }
-
-var mouseXposition=0;
-var mouseYposition=0;
-var camDistance =15;
-
-window.addEventListener('mousemove',function(e){
-	mouseXposition = -(e.clientX - this.screen.width/2)/10;
-	mouseYposition = (e.clientY - this.screen.height/2)/10;
-  })
-
-
-window.addEventListener('wheel',function(e) {
-	
-	if (camDistance + e.deltaY/20 >10) {
-		camDistance+= e.deltaY/20;		
-	}	
-})
