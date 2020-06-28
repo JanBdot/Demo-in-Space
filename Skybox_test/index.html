@@ -18,16 +18,23 @@
 		<link rel="stylesheet" href="style.css" type="text/css">
 	</head>
 	<body>
-		<canvas id="cg1-canvas" width="1280" height="800"></canvas> <br>
+		<div id="uiContainer">
+			<div id="ui">
+				<p>Spawn asteroids:</p>
+				<div class="clickable" id="createAsteroidButton1">1</div>
+				<div class="clickable" id="createAsteroidButton10">10</div>
+				<div class="clickable" id="createAsteroidButton100">100</div>
+				<div class="clickable" id="createAsteroidButton1000">1.000</div>
+				<div class="clickable" id="createAsteroidButton10000">10.000</div>
+				<div class="clickable" id="clearAsteroids">clear</div>
+				<button id="showNormalMappingButton"></button> <br>
+			</div>
+		</div>
+		<div id="viewContainer">
+			<!-- <canvas id="cg1-canvas" width="100%" height="100%"></canvas> <br> -->
+			<canvas id="cg1-canvas"></canvas> <br>
+		</div>
 
-		<button id="showNormalMappingButton"></button> <br>
-		<p>Create Asteroids:</p>
-		<button id="createAsteroidButton1">1</button>
-		<button id="createAsteroidButton10">10</button>
-		<button id="createAsteroidButton100">100</button>
-		<button id="createAsteroidButton1000">1.000</button>
-		<button id="createAsteroidButton10000">10.000</button>
-		<button id="clearAsteroids">clear</button>
 
 		<img id="sb-right" src="sourceimages/skybox/skybox_all/right.png" width="0" height="0"></img>
 		<img id="sb-left" src="sourceimages/skybox/skybox_all/left.png" width="0" height="0"></img>

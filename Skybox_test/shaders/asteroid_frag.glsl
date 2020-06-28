@@ -32,7 +32,8 @@ void main()
 	vec3 lightDir = normalize(fLightDir);
 	vec3 normal = normalize(fragNormal);
 
-	if (showNormalMapping){
+	// if (showNormalMapping){
+	if (true){
 		normal = texture2D(normalMap, fTexCoord).rgb;
 		normal = normalize(normal * 2.0 - 1.0);
 	}

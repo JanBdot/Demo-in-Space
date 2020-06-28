@@ -10,6 +10,8 @@ async function InitDemo() {
 	// Get WebGL context
 	console.log('Getting WebGL context ...');
 	const canvas = document.getElementById('cg1-canvas');
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 	const gl = canvas.getContext('webgl');
 	if (!gl) {
 		console.log('WebGL not supported, falling back on experimental-webgl');

@@ -1,3 +1,29 @@
-body {
+html, body {
     position: fixed; 
+    width: 100%;
+    height: 100%;
+
    }
+
+
+#uiContainer {
+    z-index: 3;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 80px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    /* font-size: xx-small; */
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+#viewContainer {
+    width: 100%;
+    height: 100%;
+}
