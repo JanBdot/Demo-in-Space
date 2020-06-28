@@ -311,7 +311,7 @@ async function InitDemo() {
 		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-		plane.draw();
+		// plane.draw();
 
 		// ########################################################################
 		// ########################################################################
