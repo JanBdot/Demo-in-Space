@@ -133,21 +133,21 @@ async function InitDemo() {
 	
 	const seedList = [];
 
-	
+	var testCP =vec3.create();
+	vec3.set(testCP,15,0.0,0.0);
+	console.log(testCP);
 	// Main render loop
 	const loop = function () {
+		
 		// Viewmatrix
 		const angle = performance.now() / 3000 / 6 * 2 * Math.PI;
 		
-		var camPoAbsVal= Math.sqrt((mouseXposition*mouseXposition)+(mouseYposition*mouseYposition)+15*15);
-		var cameraPosition = [camDistance*mouseXposition/camPoAbsVal, camDistance*mouseYposition/camPoAbsVal, camDistance*15/camPoAbsVal];
-		
-		
+		var cameraXrotate = (mouseXposition/2000)*Math.PI;
+		var cameraPosition=[camDistance*Math.cos(mouseYposition*Math.PI/1000),-camDistance*Math.sin(mouseYposition*Math.PI/1000),0];
+
 		mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle/4, [0, 1, 0]);
-		// mat4.lookAt(viewMatrix, [0, 3, 100], [0, 10, 0], [0, 1, 0]);
-		// mat4.rotate(viewMatrix, viewMatrix, angle/50, [0, 1, 0]);
-		// mat4.rotate(viewMatrix, viewMatrix, angle/3, [0, 0, 1]);
+		mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]);
+
 		
 		// clear framebuffer
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);

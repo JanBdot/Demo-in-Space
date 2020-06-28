@@ -11,12 +11,18 @@ function showNormalMappingFunc(gl, program, showNormalMapping){
     }
 }
 
+var mouseXStart=0;
+var mouseYStart=0;
+var mouseXBuffer=0;
+var mouseYBuffer=0;
 var mouseXposition=0;
 var mouseYposition=0;
 var camDistance =15;
 let mousedown = false;
 
 window.addEventListener('mousedown', function(){
+    mouseXStart=mouseXBuffer;
+    mouseYStart=mouseYBuffer;
     mousedown = true;
 });
 
@@ -25,9 +31,14 @@ window.addEventListener('mouseup', function(){
 });
 
 window.addEventListener('mousemove',function(e){
+    mouseXBuffer = -(e.clientX - this.screen.width/2)/10;
+    mouseYBuffer = (e.clientY - this.screen.height/2)/10;
     if (mousedown){
-        mouseXposition = -(e.clientX - this.screen.width/2)/10;
-        mouseYposition = (e.clientY - this.screen.height/2)/10;
+        mouseXposition += mouseXStart - mouseXBuffer;
+        if((mouseYposition +mouseYStart - mouseYBuffer<500)&& (mouseYposition +mouseYStart - mouseYBuffer>-500)){
+            mouseYposition +=mouseYStart - mouseYBuffer;
+        }
+        console.log(mouseXposition+" "+mouseYposition);
     }
   });
 
