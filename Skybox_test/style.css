@@ -21,6 +21,10 @@ html, body {
     padding: 10px;
 }
 
+#viewContainer {
+    z-index: 2;
+}
+
 .clickable {
     cursor: pointer;
 }

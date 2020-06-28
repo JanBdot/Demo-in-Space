@@ -17,9 +17,10 @@ uniform float shift;
 varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying vec3 fLightDir;
+varying mat4 mViewFrag;
 void main()
 {
-  vec3 lightDir = normalize(fLightDir);
+  vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
   vec3 normalDir = normalize(fNormal);
   vec3 eyeDir = vec3(0.0, 0.0, 1.0);
    
@@ -33,7 +34,7 @@ void main()
   float spec = texture2D(sOcean, fTexCoord).r;
   float cloud = texture2D(sClouds, fTexCoord - vec2(shift, 0.0)).r;
 
-  float ambient = kAmbient;
+  float ambient = kAmbient / 10.0;
   float diffuse = kDiffuse * max(dot(normalDir, lightDir), 0.0);
   float specular = spec * kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 

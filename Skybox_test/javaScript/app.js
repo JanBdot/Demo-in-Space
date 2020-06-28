@@ -172,7 +172,8 @@ async function InitDemo() {
 		seedList.push(seedByProgramList);
 	});
 
-	// Setup Lighting for Fragment Shaders
+	// Setup Lighting for Fragment Shaders 
+	// TODO : auslagern
 	callForEachProgram(setUpLighting, programList, gl);
 	const ambientSlider = document.getElementById('ambientInput');
 	const ambientLabel = document.getElementById('ambientLabel');
@@ -200,6 +201,14 @@ async function InitDemo() {
 		changeSpecular(specularSlider.value/10);
 		callForEachProgram(setUpLighting, programList, gl);
 	}
+	document.getElementById('coordButton').addEventListener('click', function() {
+		let xyz = [];
+		xyz.push(document.getElementById('xValue').value);
+		xyz.push(document.getElementById('yValue').value);
+		xyz.push(document.getElementById('zValue').value);
+		changeLightPosition(xyz);
+		callForEachProgram(setUpLighting, programList, gl);
+	})
 
 	var testCP =vec3.create();
 	vec3.set(testCP,15,0.0,0.0);
