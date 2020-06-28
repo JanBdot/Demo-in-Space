@@ -94,6 +94,7 @@ async function createEarth(gl){
 		gl.disableVertexAttribArray(texCoordAttribLocation);
 		gl.disableVertexAttribArray(normalAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+		//gl.enable(gl.DEPTH_TEST);
 	}
 	return earth;
 }

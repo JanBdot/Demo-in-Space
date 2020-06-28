@@ -1,7 +1,7 @@
 async function createSpaceship(gl) {
 	let spaceship = {};
 
-	const vertices = await fetchModel('./objects/cosmos-spaceship.obj')
+	const vertices = await fetchModel('./objects/spaceship-body.obj')
 
 	spaceship.vertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, spaceship.vertexBufferObject);
