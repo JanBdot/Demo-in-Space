@@ -23,9 +23,9 @@ void main()
   vec3 normalDir = normalize(fNormal);
   vec3 eyeDir = vec3(0.0, 0.0, 1.0);
    
-  float kAmbient = 0.3;
-  float kDiffuse = 0.7;
-  float kSpecular = 1.0;
+  float kAmbient = light.ambient.x;
+  float kDiffuse = light.diffuse.x;
+  float kSpecular = light.specular.x;
   float s = 70.0;
 
   vec4 colorDay = texture2D(sDay, fTexCoord);
