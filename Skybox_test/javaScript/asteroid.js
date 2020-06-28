@@ -100,29 +100,21 @@ function addAsteroidsToSeedList(asteroidObjects, seedList, number){
 }
 
 function randomAxis3f() {
-    let vec = [];
-    let random = Math.floor(Math.random() * 7);
-    if (random === 0) {
-        vec = [1, 0, 0];
-    }
-    if (random === 1) {
-        vec = [1, 1, 0];
-    }
-    if (random === 2) {
-        vec = [1, 1, 1];
-    }
-    if (random === 3) {
-        vec = [0, 1, 0];
-    }
-    if (random === 4) {
-        vec = [0, 1, 1];
-    }
-    if (random === 5) {
-        vec = [0, 0, 1];
-    }
-    if (random === 6) {
-        vec = [1, 0, 1];
-    }
-
-    return vec;
+    let random = 0
+    
+    let xyz = [0, 0, 0];
+    for (let i = 0; i < xyz.length; i++) {
+        random = Math.floor(Math.random() * 3);
+        if (random === 0) {
+            xyz[i] = -1;
+        }
+        else if (random === 1) {
+            xyz[i] = 0;
+        }
+        else if (random === 2) {
+            xyz[i] = 1;
+        }
+        console.log(xyz[i]);        
+    }    
+    return xyz;
 }
