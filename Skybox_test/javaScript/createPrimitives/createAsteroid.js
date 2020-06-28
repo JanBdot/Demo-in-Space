@@ -1,7 +1,8 @@
-async function createAsteroid(gl) {
+async function createAsteroid(gl, textureID, modelID) {
 	var asteroid = {};
 
-	const vertices = await fetchModel('./objects/asteroid.obj')
+	const textureIDtext = getTextureIDtext(textureID);
+	const vertices = await fetchModel('./objects/asteroid' + modelID + '.obj');
 
 	asteroid.vertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, asteroid.vertexBufferObject);
@@ -13,7 +14,8 @@ async function createAsteroid(gl) {
 	gl.bindTexture(gl.TEXTURE_2D, asteroid.texture0);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("asteroid2-diffuse"));
+	
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById(textureIDtext.diffuse));
 	gl.generateMipmap(gl.TEXTURE_2D);
 	gl.bindTexture(gl.TEXTURE_2D, null);
 
@@ -22,7 +24,7 @@ async function createAsteroid(gl) {
 	gl.bindTexture(gl.TEXTURE_2D, asteroid.texture1);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("asteroid2-normal"));
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById(textureIDtext.normal));
 	gl.generateMipmap(gl.TEXTURE_2D);
 	gl.bindTexture(gl.TEXTURE_2D, null);
 

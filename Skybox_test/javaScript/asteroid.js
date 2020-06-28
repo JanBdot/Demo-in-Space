@@ -1,4 +1,4 @@
-function createRandomPositionAstroid(distanceToPlanet, angle, asteroidSeed) {
+function spawnAsteroid(distanceToPlanet, angle, asteroidSeed) {
     const worldMatrix = new Float32Array(16);    
     
     mat4.identity(worldMatrix);
@@ -27,7 +27,7 @@ function createRandomPositionAstroid(distanceToPlanet, angle, asteroidSeed) {
     
 }
 
-function createRandomAsteroidSeed() {
+function createRandomAsteroidSeed(asteroidObjects) {
     let asteroidSeed = {
         distanceFromPlanet: 0.0,
         scale: 0.0,
@@ -36,7 +36,9 @@ function createRandomAsteroidSeed() {
         radianAxisY: 1.0,
         radianAngleZ: 0.0,
         translateY: 0.0,
-        rotationAxis: []
+        rotationAxis: [],
+        asteroidObj: null,
+        seedNumber: 0
     }
 
     let dist = 0
@@ -66,12 +68,34 @@ function createRandomAsteroidSeed() {
 
     asteroidSeed.rotationAxis = randomAxis3f();
 
+    const numberOfAsteroidTextures = 3;
+    const numberOfAsteroidModels = 4;
+    let number = Math.floor(Math.random() * (numberOfAsteroidTextures*numberOfAsteroidModels-1));
+    asteroidSeed.asteroidObj = asteroidObjects[number];
+    asteroidSeed.seedNumber = number;
+
+
     return asteroidSeed;
 }
 
-function addAsteroidsToSeedList(seedList, number){
-    for (let i = 0; i < number; i++) {			
-        seedList.push(createRandomAsteroidSeed());		
+function getTextureIDtext(id) {
+    textureID = {
+        diffuse: "",
+        normal: ""
+    }
+
+    textureID.diffuse = "asteroid" + id + "-diffuse";
+    textureID.normal = "asteroid" + id + "-normal";
+
+    return textureID;
+}
+
+
+function addAsteroidsToSeedList(asteroidObjects, seedList, number){
+    for (let i = 0; i < number; i++) {		
+        // seedList.push(createRandomAsteroidSeed(asteroidObjects));
+        let obj = createRandomAsteroidSeed(asteroidObjects);        
+        seedList[obj.seedNumber].push(obj);
     }
 }
 

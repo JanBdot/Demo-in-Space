@@ -1,5 +1,8 @@
 "use strict";
 
+const numberOfAsteroidTextures = 3;
+const numberOfAsteroidModels = 4;
+
 window.onload = InitDemo;
 
 async function InitDemo() {
@@ -52,59 +55,67 @@ async function InitDemo() {
 		return;
 	}
 
-	// // Create box
-	// console.log('Creating box object ... ');
-	// const box = await createBox(gl);
-	// // box.texture = asteroidTexture;
-	// box.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
-	// if (!box.program) {
-	// 	console.error('box Cannot run without shader program!');
+	// Create asteroid
+	console.log('Creating asteroid object ... ');
+	// const asteroid = await createAsteroid(gl);
+	// // asteroid.texture = asteroidTexture;
+	// asteroid.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
+	// if (!asteroid.program) {
+	// 	console.error('asteroid Cannot run without shader program!');
 	// 	return;
 	// }
 
-	// Create asteroid
-	console.log('Creating asteroid object ... ');
-	const asteroid = await createAsteroid(gl);
-	// asteroid.texture = asteroidTexture;
-	asteroid.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
-	if (!asteroid.program) {
-		console.error('asteroid Cannot run without shader program!');
-		return;
+	const asteroidObjects = [];
+	for (let j = 0; j < numberOfAsteroidModels; j++) {
+		
+		for (let i = 0; i < numberOfAsteroidTextures; i++) {
+			const asteroid = await createAsteroid(gl, i, j);
+			asteroid.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
+			if (!asteroid.program) {
+				console.error('asteroid Cannot run without shader program!');
+				return;
+			}
+			asteroidObjects.push(asteroid);
+		}
 	}
 	
-	let normalMapping = true;
-	const showNormalMappingButton = document.getElementById('showNormalMappingButton');
-	showNormalMappingButton.addEventListener("click", function() {
-		if (normalMapping){
-			showNormalMappingFunc(gl, asteroid.program, false);
-			normalMapping = false;
-		} else{
-			showNormalMappingFunc(gl, asteroid.program, true);
-			normalMapping = true;
-		}
-	});
-	gl.useProgram(asteroid.program);
-	showNormalMappingFunc(gl, asteroid.program, true);
-
 	
+	
+	
+	// Button Event Listeners
+	// let normalMapping = true;
+	// const showNormalMappingButton = document.getElementById('showNormalMappingButton');
+	// showNormalMappingButton.addEventListener("click", function() {
+	// 	if (normalMapping){
+	// 		showNormalMappingFunc(gl, asteroid.program, false);
+	// 		normalMapping = false;
+	// 	} else{
+	// 		showNormalMappingFunc(gl, asteroid.program, true);
+	// 		normalMapping = true;
+	// 	}
+	// });
+	// gl.useProgram(asteroid.program);
+	// showNormalMappingFunc(gl, asteroid.program, true);
+
 	document.getElementById('createAsteroidButton1').addEventListener("click", function() {
-		addAsteroidsToSeedList(seedList, 1);
+		addAsteroidsToSeedList(asteroidObjects, seedList, 1);
 	});
 	document.getElementById('createAsteroidButton10').addEventListener("click", function() {
-		addAsteroidsToSeedList(seedList, 10);
+		addAsteroidsToSeedList(asteroidObjects, seedList, 10);
 	});
 	document.getElementById('createAsteroidButton100').addEventListener("click", function() {
-		addAsteroidsToSeedList(seedList, 100);
+		addAsteroidsToSeedList(asteroidObjects, seedList, 100);
 	});
 	document.getElementById('createAsteroidButton1000').addEventListener("click", function() {
-		addAsteroidsToSeedList(seedList, 1000);
+		addAsteroidsToSeedList(asteroidObjects, seedList, 1000);
 	});
 	document.getElementById('createAsteroidButton10000').addEventListener("click", function() {
-		addAsteroidsToSeedList(seedList, 10000);
+		addAsteroidsToSeedList(asteroidObjects, seedList, 10000);
 	});
 	document.getElementById('clearAsteroids').addEventListener("click", function() {
-		seedList.length = 0;
-		
+		seedList.forEach(seedByProgramList => {
+			seedByProgramList.length = 0;
+		});	
 	});
 
 	// Create earth objects
@@ -112,7 +123,7 @@ async function InitDemo() {
 	const earth = await createEarth(gl);
 	// earth.texture = texture;
 	earth.program = await createShaderProgram(gl, './shaders/earth_vert.glsl', './shaders/earth_frag.glsl');
-	if (!asteroid.program) {
+	if (!earth.program) {
 		console.error('earth Cannot run without shader program!');
 		return;
 	}
@@ -130,12 +141,16 @@ async function InitDemo() {
 	const normalMatrix = new Float32Array(9);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
-	
+	// Init seedList Matrix
 	const seedList = [];
+	asteroidObjects.forEach(obj => {
+		let seedByProgramList = [];
+		seedList.push(seedByProgramList);
+	});
 
 	var testCP =vec3.create();
 	vec3.set(testCP,15,0.0,0.0);
-	console.log(testCP);
+	// console.log(testCP);
 	// Main render loop
 	const loop = function () {
 		
@@ -254,40 +269,49 @@ async function InitDemo() {
 		// Draw Asteroids
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
-		gl.useProgram(asteroid.program);
 		
-		matProjUniformLocation = gl.getUniformLocation(asteroid.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		// Double for-loop just for performance reasons		
+		seedList.forEach(seedByProgramList => {
+			if (seedByProgramList.length > 0) {
+				let program = seedByProgramList[0].asteroidObj.program;			
+				gl.useProgram(program);
+				
+				matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
+				gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+				
+				matViewUniformLocation = gl.getUniformLocation(program, 'mView');
+				gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+				
+				matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
+				
+				const matNormalUniformLocation = gl.getUniformLocation(program, 'mNormal');
+	
+				const lightAmbientLoc = gl.getUniformLocation(program, "light.ambient");
+				const lightDiffuseLoc = gl.getUniformLocation(program, "light.diffuse");
+				const lightSpecularLoc = gl.getUniformLocation(program, "light.specular");
+				const lightPosLoc = gl.getUniformLocation(program, "light.position");
+				gl.uniform3f(lightAmbientLoc, 2.0, 2.0, 2.0);
+				gl.uniform3f(lightDiffuseLoc, 0.5, 0.5, 0.5);
+				gl.uniform3f(lightSpecularLoc, 0.4, 0.4, 0.4);
+				let lampPos = [1.0, 0.0, 0.2];
+				gl.uniform3f(lightPosLoc, lampPos.x, lampPos.y, lampPos.z);
+	
+				seedByProgramList.forEach(asteroidSeed => {
+				
+					mat4.identity(worldMatrix);		
+					mat4.multiply(worldMatrix, worldMatrix, spawnAsteroid(-200.0, angle, asteroidSeed));
+					gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+					
 		
-		matViewUniformLocation = gl.getUniformLocation(asteroid.program, 'mView');
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-		
-		matWorldUniformLocation = gl.getUniformLocation(asteroid.program, 'mWorld');
-		
-		const matNormalUniformLocation = gl.getUniformLocation(asteroid.program, 'mNormal');
-
-		const lightAmbientLoc = gl.getUniformLocation(asteroid.program, "light.ambient");
-		const lightDiffuseLoc = gl.getUniformLocation(asteroid.program, "light.diffuse");
-		const lightSpecularLoc = gl.getUniformLocation(asteroid.program, "light.specular");
-		const lightPosLoc = gl.getUniformLocation(asteroid.program, "light.position");
-		gl.uniform3f(lightAmbientLoc, 2.0, 2.0, 2.0);
-		gl.uniform3f(lightDiffuseLoc, 0.5, 0.5, 0.5);
-		gl.uniform3f(lightSpecularLoc, 0.4, 0.4, 0.4);
-		let lampPos = [1.0, 0.0, 0.2];
-		gl.uniform3f(lightPosLoc, lampPos.x, lampPos.y, lampPos.z);
-		
-		seedList.forEach(asteroidSeed => {			
-			mat4.identity(worldMatrix);		
-			mat4.multiply(worldMatrix, worldMatrix, createRandomPositionAstroid(-200.0, angle, asteroidSeed));
-			gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-			
-
-			mat4.invert(worldMatrix, worldMatrix);
-			mat4.transpose(worldMatrix, worldMatrix);
-			mat3.fromMat4(normalMatrix, worldMatrix);
-			gl.uniformMatrix3fv(matNormalUniformLocation, gl.FALSE, normalMatrix);
-			
-			asteroid.draw();			
+					mat4.invert(worldMatrix, worldMatrix);
+					mat4.transpose(worldMatrix, worldMatrix);
+					mat3.fromMat4(normalMatrix, worldMatrix);
+					gl.uniformMatrix3fv(matNormalUniformLocation, gl.FALSE, normalMatrix);
+					
+					asteroidSeed.asteroidObj.draw();	
+				})
+				
+			}
 		});
 		// ########################################################################
 		// ########################################################################
