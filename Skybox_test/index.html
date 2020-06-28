@@ -5,6 +5,7 @@
 		<meta charset="UTF-8">
 		<script src="./javaScript/gl-matrix.js"></script>
 		<script src="./javaScript/app.js"></script>
+		<script src="./javaScript/lighting.js"></script>
 		<script src="./javaScript/ui.js"></script>
 		<script src="./javaScript/asteroid.js"></script>
 		<script src="./javaScript/fetchModel.js"></script>
@@ -16,6 +17,7 @@
 		<script src="./javaScript/createPrimitives/createTeapot.js"></script>
 		<script src="./javaScript/createPrimitives/createBox.js"></script>
 		<script src="./javaScript/createPrimitives/createAsteroid.js"></script>
+		<script src="./javaScript/createPrimitives/createPlane.js"></script>
 		<link rel="stylesheet" href="style.css" type="text/css">
 	</head>
 	<body>
@@ -28,6 +30,26 @@
 				<div class="clickable" id="createAsteroidButton1000">1.000</div>
 				<div class="clickable" id="createAsteroidButton10000">10.000</div>
 				<div class="clickable" id="clearAsteroids">clear</div>
+				<br>
+				<p>Lighting</p>
+				<div id="formContainer">
+					<form >
+						<label id="ambientLabel" for="ambientInput">Ambient</label>
+						<input class="slider" type="range" min="0.0" max="70.0" value="10.0" id="ambientInput">
+						<label id="diffuseLabel" for="diffuseInput">Diffuse</label>
+						<input class="slider" type="range" min="0.0" max="50.0" value="5.0" id="diffuseInput">
+						<label id="specularLabel" for="specularInput">Specular</label>
+						<input class="slider" type="range" min="0.0" max="50.0" value="4.0" id="specularInput">
+						<label for="posInput">Light Position</label>
+						<label for="xValue">x:</label>
+						<input id="xValue" type="number" value="-1.0">
+						<label for="yValue">y:</label>
+						<input id="yValue" type="number" value="0.5">
+						<label for="zValue">z:</label>
+						<input id="zValue" type="number" value="1.0">
+						<input id="coordButton" type="button" value="update">
+					</form>
+				</div>
 				<button id="showNormalMappingButton"></button> <br>
 			</div>
 		</div>

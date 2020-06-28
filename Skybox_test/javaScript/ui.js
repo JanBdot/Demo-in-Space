@@ -38,7 +38,7 @@ window.addEventListener('mousemove',function(e){
         if((mouseYposition +mouseYStart - mouseYBuffer<500)&& (mouseYposition +mouseYStart - mouseYBuffer>-500)){
             mouseYposition +=mouseYStart - mouseYBuffer;
         }
-        console.log(mouseXposition+" "+mouseYposition);
+        // console.log(mouseXposition+" "+mouseYposition);
     }
   });
 

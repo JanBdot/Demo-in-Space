@@ -1,5 +1,14 @@
 precision mediump float;
 
+struct LightAttr
+{
+	vec3 position;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+uniform LightAttr light;
+
 uniform samplerCube skybox;
 varying vec3 fEyeDir;
 varying vec3 fNormal;

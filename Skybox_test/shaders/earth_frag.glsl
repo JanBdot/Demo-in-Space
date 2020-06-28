@@ -1,5 +1,14 @@
 precision mediump float;
 
+struct LightAttr
+{
+	vec3 position;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+uniform LightAttr light;
+
 uniform sampler2D sDay;
 uniform sampler2D sNight;
 uniform sampler2D sOcean;
@@ -8,15 +17,16 @@ uniform float shift;
 varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying vec3 fLightDir;
+varying mat4 mViewFrag;
 void main()
 {
-  vec3 lightDir = normalize(fLightDir);
+  vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
   vec3 normalDir = normalize(fNormal);
   vec3 eyeDir = vec3(0.0, 0.0, 1.0);
    
-  float kAmbient = 0.3;
-  float kDiffuse = 0.7;
-  float kSpecular = 1.0;
+  float kAmbient = light.ambient.x;
+  float kDiffuse = light.diffuse.x;
+  float kSpecular = light.specular.x;
   float s = 70.0;
 
   vec4 colorDay = texture2D(sDay, fTexCoord);
@@ -24,7 +34,7 @@ void main()
   float spec = texture2D(sOcean, fTexCoord).r;
   float cloud = texture2D(sClouds, fTexCoord - vec2(shift, 0.0)).r;
 
-  float ambient = kAmbient;
+  float ambient = kAmbient / 10.0;
   float diffuse = kDiffuse * max(dot(normalDir, lightDir), 0.0);
   float specular = spec * kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 

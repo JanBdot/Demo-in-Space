@@ -14,11 +14,15 @@ varying vec3 fragNormal;
 varying vec3 fragPos;
 varying vec3 fLightDir;
 
+// TEST
+varying mat4 mViewFrag;
+
 void main()
 {
-    vec3 lightDir = vec3(100.0, 0.0, -50.0);
-    // fragPos = vec3(mWorld * vec4(vPosition, 1.0));
-    fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
+    mViewFrag = mView;
+    // vec3 lightDir = vec3(1.0, 0.0, 0.0);
+    fragPos = vec3(mWorld * vec4(vPosition, 1.0));
+    // fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
     // fTexCoord = vTexCoord;
     fTexCoord = vTexCoord * vec2(1.0, -1.0) + vec2(0.0, 1.0);
     fragNormal = mNormal * vNormal;

@@ -113,8 +113,7 @@ function randomAxis3f() {
         }
         else if (random === 2) {
             xyz[i] = 1;
-        }
-        console.log(xyz[i]);        
+        }      
     }    
     return xyz;
 }
