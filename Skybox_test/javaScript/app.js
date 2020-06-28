@@ -296,39 +296,7 @@ async function InitDemo() {
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
 		spaceship.draw();
-		// ########################################################################
-		// ########################################################################
-		// ------------------------------------------------------------------------
-		// ------------------------------------------------------------------------
-		// Draw Cockpit
-		// ------------------------------------------------------------------------
-		// ------------------------------------------------------------------------
-		gl.enable(gl.DEPTH_TEST);
-		gl.useProgram(cockpit.program);
 		
-
-		
-/* 		//const invViewMatrix = mat3.create();
-		mat3.fromMat4(invViewMatrix, viewMatrix);
-		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
-		//const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
-		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
-		//let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
-		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
-		// console.log("EyeDir: " + eyeDir); */
-		
-		matProjUniformLocation = gl.getUniformLocation(cockpit.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		matViewUniformLocation = gl.getUniformLocation(cockpit.program, 'mView');
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-		
-		mat4.identity(worldMatrix);
-		mat4.rotate(worldMatrix, worldMatrix, Math.PI/2, [0, 1.0, 0]);
-		matWorldUniformLocation = gl.getUniformLocation(cockpit.program, 'mWorld');
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		cockpit.draw();
 		// ########################################################################
 		// ########################################################################
 		
@@ -447,6 +415,48 @@ async function InitDemo() {
 				
 			}
 		});
+
+		// ########################################################################
+		// ########################################################################
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Cockpit
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		gl.enable(gl.DEPTH_TEST);
+		gl.useProgram(cockpit.program);
+		
+
+		
+/* 		//const invViewMatrix = mat3.create();
+		mat3.fromMat4(invViewMatrix, viewMatrix);
+		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		//const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+		//let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
+		// console.log("EyeDir: " + eyeDir); */
+		
+		matProjUniformLocation = gl.getUniformLocation(cockpit.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		matViewUniformLocation = gl.getUniformLocation(cockpit.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+		
+		mat4.identity(worldMatrix);
+		mat4.rotate(worldMatrix, worldMatrix, Math.PI/2, [0, 1.0, 0]);
+		matWorldUniformLocation = gl.getUniformLocation(cockpit.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+		
+		cockpit.draw();
+
+		mat4.rotate(worldMatrix, worldMatrix, Math.PI, [0, 1.0, 0]);
+		matWorldUniformLocation = gl.getUniformLocation(cockpit.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		cockpit.draw();
+
+
 		// ########################################################################
 		// ########################################################################
 		

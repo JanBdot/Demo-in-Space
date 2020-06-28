@@ -55,6 +55,7 @@ async function createCockpit(gl) {
 		gl.disableVertexAttribArray(normalAttribLocation);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		gl.enable(gl.BLEND);
+		//gl.disable(gl.DEPTH_TEST);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 
