@@ -251,7 +251,7 @@ async function InitDemo() {
 		
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
-		// Draw Asteroid
+		// Draw Asteroids
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		gl.useProgram(asteroid.program);
@@ -281,7 +281,7 @@ async function InitDemo() {
 			mat4.multiply(worldMatrix, worldMatrix, createRandomPositionAstroid(-200.0, angle, asteroidSeed));
 			gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 			
-			// const matNormalUniformLocation = gl.getUniformLocation(asteroid.program, 'mNormal');
+
 			mat4.invert(worldMatrix, worldMatrix);
 			mat4.transpose(worldMatrix, worldMatrix);
 			mat3.fromMat4(normalMatrix, worldMatrix);
