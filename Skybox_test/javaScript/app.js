@@ -27,6 +27,9 @@ async function InitDemo() {
 	const textureSkyboxNoPointStars = createSkyBoxNoPointStarsTexture(gl);
 	// const asteroidTexture = createAsteroidTexture(gl);
 
+	// List with all programs (everytime a program is created, push to list)
+	const programList = [];
+
 	// Create skybox
 	console.log('Creating skybox ...');
 	const skybox = createSkyBox(gl);
@@ -36,6 +39,7 @@ async function InitDemo() {
 		console.error('Cannot run without shader program!');
 		return;
 	}
+	programList.push(skybox.program);
 
 	// Create teapot object
 	console.log('Creating teapot object ...');
@@ -46,6 +50,8 @@ async function InitDemo() {
 		console.error('Cannot run without shader program!');
 		return;
 	}
+	programList.push(teapot.program);
+
 
 	// Create spaceship object
 	console.log('Creating spaceship object ...');
@@ -56,6 +62,8 @@ async function InitDemo() {
 		console.error('spaceship Cannot run without shader program!');
 		return;
 	}
+	programList.push(spaceship.program);
+
 
 	// Create asteroid
 	console.log('Creating asteroid object ... ');
@@ -78,10 +86,21 @@ async function InitDemo() {
 				return;
 			}
 			asteroidObjects.push(asteroid);
+			programList.push(asteroid.program);
+			
 		}
 	}
 	
-	
+	// Create Light Test Plane
+	console.log('CReate Light Test ');
+	const plane = await createPlane(gl);
+	plane.program = await createShaderProgram(gl, './shaders/teapot_lighting_vert.glsl', './shaders/teapot_lighting_frag.glsl');
+	if (!plane.program) {
+		console.error('asteroid Cannot run without shader program!');
+		return;		
+	}
+	programList.push(plane.program);
+
 	
 	
 	// Button Event Listeners
@@ -129,6 +148,8 @@ async function InitDemo() {
 		console.error('earth Cannot run without shader program!');
 		return;
 	}
+	programList.push(earth.program);
+
 
 	// Configure OpenGL state machine
 	gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -141,6 +162,7 @@ async function InitDemo() {
 	const viewMatrix = new Float32Array(16);
 	const projMatrix = new Float32Array(16);
 	const normalMatrix = new Float32Array(9);
+	const tmpMatrix = new Float32Array(16);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
 	// Init seedList Matrix
@@ -149,6 +171,35 @@ async function InitDemo() {
 		let seedByProgramList = [];
 		seedList.push(seedByProgramList);
 	});
+
+	// Setup Lighting for Fragment Shaders
+	callForEachProgram(setUpLighting, programList, gl);
+	const ambientSlider = document.getElementById('ambientInput');
+	const ambientLabel = document.getElementById('ambientLabel');
+	const diffuseSlider = document.getElementById('diffuseInput');
+	const diffuseLabel = document.getElementById('diffuseLabel');
+	const specularSlider = document.getElementById('specularInput');
+	const specularLabel = document.getElementById('specularLabel');
+
+	ambientLabel.innerHTML = "Ambient: " + ambientSlider.value/10;
+	diffuseLabel.innerHTML = "Diffuse: " + diffuseSlider.value/10;
+	specularLabel.innerHTML = "Specular: " + specularSlider.value/10;
+	
+	ambientSlider.oninput = function() {
+		ambientLabel.innerHTML = "Ambient: " + ambientSlider.value/10;
+		changeAmbient(ambientSlider.value/10);
+		callForEachProgram(setUpLighting, programList, gl);
+	}
+	diffuseSlider.oninput = function() {
+		diffuseLabel.innerHTML = "Diffuse: " + diffuseSlider.value/10;
+		changeDiffuse(diffuseSlider.value/10);
+		callForEachProgram(setUpLighting, programList, gl);
+	}
+	specularSlider.oninput = function() {
+		specularLabel.innerHTML = "Specular: " + specularSlider.value/10;
+		changeSpecular(specularSlider.value/10);
+		callForEachProgram(setUpLighting, programList, gl);
+	}
 
 	var testCP =vec3.create();
 	vec3.set(testCP,15,0.0,0.0);
@@ -213,6 +264,7 @@ async function InitDemo() {
 		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
 		// console.log("EyeDir: " + eyeDir);
 		
+		
 		matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 		
@@ -228,6 +280,43 @@ async function InitDemo() {
 		// ########################################################################
 		
 		
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Plane
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		gl.useProgram(plane.program);
+		
+		const lightDir = vec3.fromValues(0.0, 0.0, 1.0);
+		mat3.identity(normalMatrix);
+
+		mat4.multiply(tmpMatrix, viewMatrix, worldMatrix);
+		mat3.normalFromMat4(normalMatrix, tmpMatrix);
+		const matNormUniformLocation = gl.getUniformLocation(plane.program, 'mNormal');
+		gl.uniformMatrix3fv(matNormUniformLocation, gl.FALSE, normalMatrix);
+		
+		const lightDirUniformLocation = gl.getUniformLocation(plane.program, 'lightDir');
+		gl.uniform3fv(lightDirUniformLocation, lightDir);
+		// console.log("lightDir: " + lightDir);
+		
+		matProjUniformLocation = gl.getUniformLocation(plane.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		matViewUniformLocation = gl.getUniformLocation(plane.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+		
+		mat4.identity(worldMatrix);
+		matWorldUniformLocation = gl.getUniformLocation(plane.program, 'mWorld');
+		mat4.rotate(worldMatrix, worldMatrix, 1.5, [0, 1.0, 0]);
+		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		plane.draw();
+
+		// ########################################################################
+		// ########################################################################
+		
+
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		// Draw Earth
@@ -288,16 +377,6 @@ async function InitDemo() {
 				
 				const matNormalUniformLocation = gl.getUniformLocation(program, 'mNormal');
 	
-				const lightAmbientLoc = gl.getUniformLocation(program, "light.ambient");
-				const lightDiffuseLoc = gl.getUniformLocation(program, "light.diffuse");
-				const lightSpecularLoc = gl.getUniformLocation(program, "light.specular");
-				const lightPosLoc = gl.getUniformLocation(program, "light.position");
-				gl.uniform3f(lightAmbientLoc, 2.0, 2.0, 2.0);
-				gl.uniform3f(lightDiffuseLoc, 0.5, 0.5, 0.5);
-				gl.uniform3f(lightSpecularLoc, 0.4, 0.4, 0.4);
-				let lampPos = [1.0, 0.0, 0.2];
-				gl.uniform3f(lightPosLoc, lampPos.x, lampPos.y, lampPos.z);
-	
 				seedByProgramList.forEach(asteroidSeed => {
 				
 					mat4.identity(worldMatrix);		
@@ -305,6 +384,7 @@ async function InitDemo() {
 					gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 					
 		
+					mat3.identity(normalMatrix);
 					mat4.invert(worldMatrix, worldMatrix);
 					mat4.transpose(worldMatrix, worldMatrix);
 					mat3.fromMat4(normalMatrix, worldMatrix);

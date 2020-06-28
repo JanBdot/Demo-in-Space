@@ -7,11 +7,11 @@ struct LightAttr
 	vec3 diffuse;
 	vec3 specular;
 };
+uniform LightAttr light;
 
 uniform sampler2D diffuseMap;
 uniform sampler2D normalMap;
 
-uniform LightAttr light;
 uniform vec3 viewPos;
 
 uniform bool showNormalMapping;

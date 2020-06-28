@@ -1,5 +1,14 @@
 precision mediump float;
 
+struct LightAttr
+{
+	vec3 position;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+uniform LightAttr light;
+
 uniform sampler2D sDay;
 uniform sampler2D sNight;
 uniform sampler2D sOcean;

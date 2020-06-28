@@ -1,5 +1,14 @@
 precision mediump float;
 
+struct LightAttr
+{
+	vec3 position;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+uniform LightAttr light;
+
 uniform sampler2D textureMap;
 uniform sampler2D normalMap;
 
