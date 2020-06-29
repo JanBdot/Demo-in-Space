@@ -20,9 +20,8 @@ varying vec2 fTexCoord;
 varying vec3 fragNormal;
 varying vec3 fragPos;
 varying vec3 fLightDir;
+varying vec3 viewPosition;
 varying mat4 mViewFrag;
-
-
 
 void main()
 {
@@ -31,12 +30,13 @@ void main()
 	float ambientStrength = 0.1;
 	vec3 ambient = ambientStrength * light.ambient;
 
-	vec3 lightDir = normalize(light.position - fragPos);
+	vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
 	vec3 normal = normalize(fragNormal);
+	vec3 viewPos = normalize(viewPosition);
 
 	// if (showNormalMapping){
-	if (true){
-		normal = vec3(texture2D(normalMap, fTexCoord));
+	if (false){
+		normal = texture2D(normalMap, fTexCoord).rgb;
 		normal = normalize(normal * 2.0 - 1.0);
 	}
 

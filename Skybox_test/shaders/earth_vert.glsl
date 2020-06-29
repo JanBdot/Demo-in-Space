@@ -3,9 +3,11 @@ precision mediump float;
 uniform mat4 mWorld;
 uniform mat4 mView;
 uniform mat4 mProj;
+
 attribute vec3 vPosition;
 attribute vec2 vTexCoord;
 attribute vec3 vNormal;
+
 varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying vec3 fLightDir;

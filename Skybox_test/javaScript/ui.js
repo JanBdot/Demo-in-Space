@@ -1,6 +1,8 @@
 function showNormalMappingFunc(gl, program, showNormalMapping){
     let normalMappingUniformLocation = gl.getUniformLocation(program, 'showNormalMapping');
-    const button = document.getElementById('showNormalMappingButton');    
+    const button = document.getElementById('showNormalMappingButton');
+    
+    gl.useProgram(program);
     
     if (showNormalMapping) {
         gl.uniform1i(normalMappingUniformLocation, 1);

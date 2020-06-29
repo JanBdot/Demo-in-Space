@@ -105,19 +105,32 @@ async function InitDemo() {
 	}	
 	
 	// Button Event Listeners
-	// let normalMapping = true;
-	// const showNormalMappingButton = document.getElementById('showNormalMappingButton');
-	// showNormalMappingButton.addEventListener("click", function() {
-	// 	if (normalMapping){
-	// 		showNormalMappingFunc(gl, asteroid.program, false);
-	// 		normalMapping = false;
-	// 	} else{
-	// 		showNormalMappingFunc(gl, asteroid.program, true);
-	// 		normalMapping = true;
-	// 	}
-	// });
-	// gl.useProgram(asteroid.program);
-	// showNormalMappingFunc(gl, asteroid.program, true);
+	let normalMapping = true;
+	const showNormalMappingButton = document.getElementById('showNormalMappingButton');
+	showNormalMappingButton.addEventListener("click", function() {
+		if (normalMapping){
+			asteroidObjects.forEach(asteroid => {
+				showNormalMappingFunc(gl, asteroid.program, false);						
+			});	
+			normalMapping = false;
+		} else{
+			asteroidObjects.forEach(asteroid => {
+				showNormalMappingFunc(gl, asteroid.program, true);
+			});	
+			normalMapping = true;
+		}
+	});
+	if (normalMapping){
+		asteroidObjects.forEach(asteroid => {
+			showNormalMappingFunc(gl, asteroid.program, false);						
+		});	
+		normalMapping = false;
+	} else{
+		asteroidObjects.forEach(asteroid => {
+			showNormalMappingFunc(gl, asteroid.program, true);
+		});	
+		normalMapping = true;
+	}
 
 	document.getElementById('createAsteroidButton1').addEventListener("click", function() {
 		addAsteroidsToSeedList(asteroidObjects, seedList, 1);
@@ -310,6 +323,7 @@ async function InitDemo() {
 		
 		mat4.identity(worldMatrix);
 		matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
+		mat4.translate(worldMatrix, worldMatrix, [0,0,10.0]);
 		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);

@@ -17,9 +17,9 @@ varying vec3 viewPosition;
 
 void main()
 {
-    viewPosition.x = mView[3][0];
-    viewPosition.y = mView[3][1];
-    viewPosition.z = mView[3][2];
+    viewPosition.x = mView[3].x;
+    viewPosition.y = mView[3].y;
+    viewPosition.z = mView[3].z;
     vec3 lightDir = vec3(0.0, 0.0, 1.0);
     fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
     fragPos = vec3(mWorld * vec4(vPosition, 1.0));
