@@ -1,14 +1,14 @@
-async function createSpaceship(gl) {
-	let spaceship = {};
+async function createCockpit(gl) {
+	let cockpit = {};
 
-	const vertices = await fetchModel('./objects/spaceship-body.obj')
+	const vertices = await fetchModel('./objects/spaceship-cockpit.obj')
 
-	spaceship.vertexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, spaceship.vertexBufferObject);
+	cockpit.vertexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, cockpit.vertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-	spaceship.draw = function() {
+	cockpit.draw = function() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
 
 		const positionAttribLocation = gl.getAttribLocation(this.program, 'vPosition');
@@ -33,14 +33,31 @@ async function createSpaceship(gl) {
 		);
 		gl.enableVertexAttribArray(normalAttribLocation);
 
-		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+		//gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+		var colorAttribLocation = gl.getAttribLocation(this.program, 'vColor');
+		gl.vertexAttrib4f(colorAttribLocation, 0.0, 0.0, 1.0, 1.0);
 
+		/* var cAmbientUniformLocation = gl.getUniformLocation(this.program, 'cAmbient');
+		gl.uniform3f(cAmbientUniformLocation, 0.23, 0.09, 0.03);
+
+		var cDiffuseUniformLocation = gl.getUniformLocation(this.program, 'cDiffuse');
+		gl.uniform3f(cDiffuseUniformLocation, 0.55, 0.21, 0.07);
+
+		var cSpecularUniformLocation = gl.getUniformLocation(this.program, 'cSpecular');
+		gl.uniform3f(cSpecularUniformLocation, 0.58, 0.22, 0.07);
+
+		var alphaUniformLocation = gl.getUniformLocation(this.program, 'alpha');
+		gl.uniform1f(alphaUniformLocation, 51.2); */
+		
 		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/8);
 
 		gl.disableVertexAttribArray(positionAttribLocation);
 		gl.disableVertexAttribArray(normalAttribLocation);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		gl.enable(gl.BLEND);
+		//gl.disable(gl.DEPTH_TEST);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 
-	return spaceship;
+	return cockpit;
 }
