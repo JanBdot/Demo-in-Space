@@ -63,18 +63,21 @@ async function InitDemo() {
 		return;
 	}
 	programList.push(spaceship.program);
+	
+	// Create Testbox
+	console.log('Create Testbox ...');
+	const testBox = await createTextureBox(gl, document.getElementById('testbox-diffuse'), document.getElementById('testbox-normal'));
+	testBox.program = await createShaderProgram(gl, './test/testShaders/simpleNormalVert.glsl', './test/testShaders/simpleNormalFrag.glsl');
+	if (!testBox.program) {
+		console.error('testBox Cannot run without shader program!');
+		return;
+	}
+	programList.push(testBox.program);
+	
 
 
 	// Create asteroid
 	console.log('Creating asteroid object ... ');
-	// const asteroid = await createAsteroid(gl);
-	// // asteroid.texture = asteroidTexture;
-	// asteroid.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
-	// if (!asteroid.program) {
-	// 	console.error('asteroid Cannot run without shader program!');
-	// 	return;
-	// }
-
 	const asteroidObjects = [];
 	for (let j = 0; j < numberOfAsteroidModels; j++) {
 		
@@ -86,22 +89,9 @@ async function InitDemo() {
 				return;
 			}
 			asteroidObjects.push(asteroid);
-			programList.push(asteroid.program);
-			
+			programList.push(asteroid.program);			
 		}
-	}
-	
-	// Create Light Test Plane
-	console.log('CReate Light Test ');
-	const plane = await createPlane(gl);
-	plane.program = await createShaderProgram(gl, './shaders/teapot_lighting_vert.glsl', './shaders/teapot_lighting_frag.glsl');
-	if (!plane.program) {
-		console.error('asteroid Cannot run without shader program!');
-		return;		
-	}
-	programList.push(plane.program);
-
-	
+	}	
 	
 	// Button Event Listeners
 	// let normalMapping = true;
@@ -162,7 +152,6 @@ async function InitDemo() {
 	const viewMatrix = new Float32Array(16);
 	const projMatrix = new Float32Array(16);
 	const normalMatrix = new Float32Array(9);
-	const tmpMatrix = new Float32Array(16);
 	mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
 	// Init seedList Matrix
@@ -291,36 +280,30 @@ async function InitDemo() {
 		
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
-		// Draw Plane
+		// Draw TestBox
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
-		gl.useProgram(plane.program);
-		
-		const lightDir = vec3.fromValues(0.0, 0.0, 1.0);
+		gl.useProgram(testBox.program);
+
 		mat3.identity(normalMatrix);
 
-		mat4.multiply(tmpMatrix, viewMatrix, worldMatrix);
-		mat3.normalFromMat4(normalMatrix, tmpMatrix);
-		const matNormUniformLocation = gl.getUniformLocation(plane.program, 'mNormal');
+		const matNormUniformLocation = gl.getUniformLocation(testBox.program, 'mNormal');
 		gl.uniformMatrix3fv(matNormUniformLocation, gl.FALSE, normalMatrix);
 		
-		const lightDirUniformLocation = gl.getUniformLocation(plane.program, 'lightDir');
-		gl.uniform3fv(lightDirUniformLocation, lightDir);
-		// console.log("lightDir: " + lightDir);
-		
-		matProjUniformLocation = gl.getUniformLocation(plane.program, 'mProj');
+		matProjUniformLocation = gl.getUniformLocation(testBox.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 		
-		matViewUniformLocation = gl.getUniformLocation(plane.program, 'mView');
+		matViewUniformLocation = gl.getUniformLocation(testBox.program, 'mView');
+		
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 		
 		mat4.identity(worldMatrix);
-		matWorldUniformLocation = gl.getUniformLocation(plane.program, 'mWorld');
-		mat4.rotate(worldMatrix, worldMatrix, 1.5, [0, 1.0, 0]);
+		matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
 		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-		// plane.draw();
+		testBox.draw();
 
 		// ########################################################################
 		// ########################################################################

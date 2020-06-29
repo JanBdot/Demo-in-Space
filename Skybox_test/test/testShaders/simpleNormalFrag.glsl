@@ -7,41 +7,34 @@ struct LightAttr
 	vec3 diffuse;
 	vec3 specular;
 };
-uniform LightAttr light;
 
 uniform sampler2D diffuseMap;
 uniform sampler2D normalMap;
 
-uniform vec3 viewPos;
-
-uniform bool showNormalMapping;
+uniform LightAttr light;
 
 varying vec2 fTexCoord;
 varying vec3 fragNormal;
 varying vec3 fragPos;
 varying vec3 fLightDir;
-varying mat4 mViewFrag;
-
+varying vec3 viewPosition;
 
 
 void main()
 {
-	vec3 objectColor = texture2D(diffuseMap, fTexCoord).rgb;
+    vec3 objectColor = texture2D(diffuseMap, fTexCoord).rgb;
 
-	float ambientStrength = 0.1;
+	float ambientStrength = 0.15;
 	vec3 ambient = ambientStrength * light.ambient;
 
-	vec3 lightDir = normalize(light.position - fragPos);
+    vec3 lightDir = normalize(fLightDir);
 	vec3 normal = normalize(fragNormal);
+	vec3 viewPos = normalize(viewPosition);
 
-	// if (showNormalMapping){
-	if (true){
-		normal = vec3(texture2D(normalMap, fTexCoord));
-		normal = normalize(normal * 2.0 - 1.0);
-	}
+    normal = texture2D(normalMap, fTexCoord).rgb;
+    normal = normalize(normal * 2.0 - 1.0);
 
-	// diffFactor is 1 if normal and lightDir is direct opposite, angle > +-90 --> diffFactor < 0
-	float diffFactor = max(dot(normal, lightDir), 0.0);
+    float diffFactor = max(dot(lightDir, normal), 0.0);
 	vec3 diffuse = diffFactor * light.diffuse;
 
 	vec3 viewDir = normalize(viewPos - fragPos);
@@ -52,5 +45,5 @@ void main()
 
 	vec3 result = (ambient + diffuse + specular ) * objectColor;
 
-	gl_FragColor =  vec4(result, 1.0);
+    gl_FragColor =  vec4(result, 1.0);
 }
