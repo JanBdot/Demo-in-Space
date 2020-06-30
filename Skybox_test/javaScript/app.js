@@ -257,6 +257,8 @@ async function InitDemo() {
 	
 	// Main render loop
 	const loop = function () {
+		callForEachProgram(setUpLighting, programList, gl);
+
 		mat4.perspective(projMatrix, glMatrix.toRadian(90), width / height, 0.1, 1000.0);
 		
 		createCubeMapTexture();
@@ -424,6 +426,7 @@ async function InitDemo() {
 
 	//	var colorAttribLocation = gl.getAttribLocation(this.program, 'vColor');
 //		gl.vertexAttrib4f(colorAttribLocation, 0.0, 0.0, 1.0, 1.0);
+		
 
 		matProjUniformLocation = gl.getUniformLocation(strTest.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -432,15 +435,29 @@ async function InitDemo() {
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 		
 		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [-10.0, 0.0, 0.0]);
+		mat4.translate(worldMatrix, worldMatrix, [-20, 0.0, 0.0]);
+		mat4.scale(worldMatrix, worldMatrix, [1.0, 3.0, 1.0]);
+		
+		//var lightXrotate = (mouseLightControlY/2000)*Math.PI;
+		//mat4.rotate(worldMatrix,worldMatrix,lightXrotate,[0,1,0] );
+
+
+
+/* 			var lpPosition=[
+			camDistance*Math.cos(mouseLightControlY*Math.PI/1000),
+			-camDistance*Math.sin(mouseLightControlY*Math.PI/1000),0]; */
+
+/* 			mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
+			mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]); */	
+		
 		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
 		strTest.draw();
 
-		mat4.identity(worldMatrix);
+/* 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 10.0]);
-		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
+		mat4.scale(worldMatrix, worldMatrix, [1.0, 1.0, 1.0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
 
 		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
@@ -450,13 +467,13 @@ async function InitDemo() {
 
 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [15.0, 0.0, -5.0]);
-		mat4.scale(worldMatrix, worldMatrix, [12.0, 20.0, 10.0]);
+		mat4.scale(worldMatrix, worldMatrix, [1.0, 1.0, 1.0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle/3, [0, 1.0, 0]);
 
 		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-		strTest.draw();
+		strTest.draw(); */
 
 		// ########################################################################
 		// ########################################################################
@@ -498,7 +515,7 @@ async function InitDemo() {
 		
 		mat4.identity(worldMatrix);
 		let matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
-		mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(90), [0, 1.0, 0]);
+		//mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(90), [0, 1.0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
 		spaceship.texture = sceneFrameBufferTexture;
