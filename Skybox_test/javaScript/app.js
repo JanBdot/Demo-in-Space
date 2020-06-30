@@ -456,11 +456,11 @@ async function InitDemo() {
 			cameraPosition[0]*Math.sin(cameraXrotate)]
 		
 		var camPosLocation = gl.getUniformLocation(strTest.program, 'cPos');
-		console.log(
+/* 		console.log(
 			Math.floor(camDir[0]),	
 			Math.floor(camDir[1]),
 			Math.floor(camDir[2]),
-		)
+		) */
 		gl.uniform3f(camPosLocation,camDir[0],camDir[1],camDir[2]);
 		//gl.uniform3f(camPosLocation,angle/2,angle/3,angle/6);
 
@@ -478,7 +478,20 @@ async function InitDemo() {
 		strTest.draw();
 
 		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [-5.0, 5.0, -5.0]);
+		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 10.0]);
+		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
+
+		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		strTest.draw();
+
+		mat4.identity(worldMatrix);
+		mat4.translate(worldMatrix, worldMatrix, [15.0, 0.0, -5.0]);
+		mat4.scale(worldMatrix, worldMatrix, [12.0, 20.0, 10.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle/3, [0, 1.0, 0]);
+
 		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 

@@ -6,6 +6,7 @@ struct LightAttr
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+	vec3 spLD;
 };
 uniform LightAttr light;
 
@@ -16,16 +17,19 @@ uniform vec3 viewPos;
 
 uniform bool showNormalMapping;
 
+varying vec3 fPosition;
 varying vec2 fTexCoord;
 varying vec3 fragNormal;
 varying vec3 fragPos;
 varying vec3 fLightDir;
 varying vec3 viewPosition;
+//  view->World
 varying mat4 mViewFrag;
 
 
 void main()
 {
+
 	vec3 objectColor = texture2D(diffuseMap, fTexCoord).rgb;
 
 	float ambientStrength = 0.1;
@@ -55,7 +59,7 @@ void main()
 	vec3 result = (ambient + diffuse + specular ) * objectColor;
 	//vec3 result = (ambient + diffuse + specular ) * texel.rgb;
 
-	gl_FragColor =  vec4(result, 1.0);
+	//gl_FragColor =  vec4(result, 1.0);
 
 	
 	//vec3 ambientLightIntensity =  vec3	(0.1,0.1,0.1);
@@ -70,6 +74,33 @@ void main()
 							max(dot(fragNormal,sunLightDirection), 0.0));
 
 	//gl_FragColor = vec4(texel.rgb *lightIntensity, texel.a)	;  
+	//gl_FragColor = vec4(objectColor *lightIntensity, 1.0)	;  
+
+	//TEST
+	
+	//vec3 newLight = normalize(vec3(5,5,0));
+	vec3 newLight = normalize(light.position);
+
+/* 	vec3 localLightDir = normalize( vec3(light.position[0]-fragPos[0],
+										light.position[1]-fragPos[2],
+										light.position[2]-fragPos[2]	) ); */
+	vec3 localLightDir = normalize( vec3(0.0-fragPos[0],
+										-5.0-fragPos[2],
+										0.0-fragPos[2]	) ); 
+ 	//vec3 lTest = (vec4(light.spLD,0.0)*mViewFrag).xyz;
+	vec3 lTest = light.spLD;
+	if( 
+		//dot(localLightDir,light.spLD)>0.9 
+		3>1
+		){
+		float light = max(dot(normal,localLightDir),0.0);
+		gl_FragColor = vec4(objectColor*light,1.0);
+	}	 
+		//vec3 lTest = normalize(light.spLD);
+		//float light = max(dot(normal,lTest),0.0);
+		//float light = max(dot(normal,localLightDir),0.0);
+		//gl_FragColor += vec4(objectColor*light,1.0);
+
 
 
 	
