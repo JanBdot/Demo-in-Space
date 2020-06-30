@@ -76,7 +76,28 @@ async function InitDemo() {
 		return;
 	}
 	programList.push(cockpit.program);
-	
+
+	// Create Spotlight object
+	console.log('Creating Spotlight object ...');
+	const spotlight = await createSpotlight(gl);
+	spotlight.program = await createShaderProgram(gl, './shaders/spotlight_vert.glsl', './shaders/spotlight_frag.glsl');
+	if (!spotlight.program) {
+		console.error('spotlight Cannot run without shader program!');
+		return;
+	}
+	//programList.push(cockpit.program);
+
+	// Create StrTEst object
+	console.log('Creating StrTest object ...');
+	const strTest = await createStrTest(gl,0,0);
+	strTest.program = await createShaderProgram(gl, './shaders/astrTest_vert.glsl', './shaders/astrTest_frag.glsl');
+	if (!strTest.program) {
+		console.error('StrTest Cannot run without shader program!');
+		return;
+	}
+	programList.push(strTest.program);
+
+
 	// Create asteroid
 	console.log('Creating asteroid object ... ');
 	const asteroidObjects = [];
@@ -232,6 +253,9 @@ async function InitDemo() {
 	const viewMatrix = new Float32Array(16);
 	const projMatrix = new Float32Array(16);
 	const normalMatrix = new Float32Array(9);
+
+	let cameraPosition;
+	let cameraXrotate;
 	
 	// Main render loop
 	const loop = function () {
@@ -249,12 +273,30 @@ async function InitDemo() {
 
 		mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
-		var cameraXrotate = (mouseXposition/2000)*Math.PI;
-		var cameraPosition=[camDistance*Math.cos(mouseYposition*Math.PI/1000),-camDistance*Math.sin(mouseYposition*Math.PI/1000),0];
+		// cameraXrotate = (mouseXposition/2000)*Math.PI;
+		// cameraPosition=[
+		// 	camDistance*Math.cos(mouseYposition*Math.PI/1000),
+		// 	-camDistance*Math.sin(mouseYposition*Math.PI/1000),0];
 
-		mat4.identity(viewMatrix);
-		mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
-		mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]);
+		// mat4.identity(viewMatrix);
+		// mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
+		// mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]);
+
+		// gl.useProgram(strTest.program);
+
+		// var camDir =[
+		// 	cameraPosition[0]*Math.cos(cameraXrotate),
+		// 	cameraPosition[1],
+		// 	cameraPosition[0]*Math.sin(cameraXrotate)]
+		
+		// var camPosLocation = gl.getUniformLocation(strTest.program, 'cPos');
+		// console.log(
+		// 	Math.floor(camDir[0]),	
+		// 	Math.floor(camDir[1]),
+		// 	Math.floor(camDir[2]),
+		// )
+		// gl.uniform3f(camPosLocation,camDir[0],camDir[1],camDir[2]);
+		// //gl.uniform3f(camPosLocation,angle/2,angle/3,angle/6);
 
 		drawScene();
 		drawSpaceship();
@@ -267,7 +309,6 @@ async function InitDemo() {
 
 	const drawScene = function(){
 		const angle = performance.now() / 3000 / 6 * 2 * Math.PI;
-	
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		// Draw Skybox
@@ -373,12 +414,69 @@ async function InitDemo() {
 		});		
 		// ########################################################################
 		// ########################################################################
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw StrTest
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		gl.enable(gl.DEPTH_TEST);
+		gl.useProgram(strTest.program);
 
-		// // ------------------------------------------------------------------------
-		// // ------------------------------------------------------------------------
-		// // Draw Cockpit
-		// // ------------------------------------------------------------------------
-		// // ------------------------------------------------------------------------
+		cameraXrotate = (mouseXposition/2000)*Math.PI;
+		cameraPosition=[
+			camDistance*Math.cos(mouseYposition*Math.PI/1000),
+			-camDistance*Math.sin(mouseYposition*Math.PI/1000),0];
+
+		mat4.identity(viewMatrix);
+		mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
+		mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]);
+
+		gl.useProgram(strTest.program);
+
+		var camDir =[
+			cameraPosition[0]*Math.cos(cameraXrotate),
+			cameraPosition[1],
+			cameraPosition[0]*Math.sin(cameraXrotate)]
+		
+		var camPosLocation = gl.getUniformLocation(strTest.program, 'cPos');
+		console.log(
+			Math.floor(camDir[0]),	
+			Math.floor(camDir[1]),
+			Math.floor(camDir[2]),
+		)
+		gl.uniform3f(camPosLocation,camDir[0],camDir[1],camDir[2]);
+		//gl.uniform3f(camPosLocation,angle/2,angle/3,angle/6);
+
+	//	var colorAttribLocation = gl.getAttribLocation(this.program, 'vColor');
+//		gl.vertexAttrib4f(colorAttribLocation, 0.0, 0.0, 1.0, 1.0);
+
+		matProjUniformLocation = gl.getUniformLocation(strTest.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		matViewUniformLocation = gl.getUniformLocation(strTest.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+		
+		mat4.identity(worldMatrix);
+		mat4.translate(worldMatrix, worldMatrix, [-10.0, 0.0, 0.0]);
+		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+		
+		strTest.draw();
+
+		mat4.identity(worldMatrix);
+		mat4.translate(worldMatrix, worldMatrix, [-5.0, 5.0, -5.0]);
+		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		strTest.draw();
+
+		// ########################################################################
+		// ########################################################################
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Cockpit
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
 		gl.enable(gl.DEPTH_TEST);
 		gl.useProgram(cockpit.program);
 		/* 		//const invViewMatrix = mat3.create();
@@ -438,19 +536,52 @@ async function InitDemo() {
 		// console.log("EyeDir: " + eyeDir);
 		
 		
-		const matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
+		let matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 		
-		const matViewUniformLocation = gl.getUniformLocation(spaceship.program, 'mView');
+		let matViewUniformLocation = gl.getUniformLocation(spaceship.program, 'mView');
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 		
 		mat4.identity(worldMatrix);
-		const matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
+		let matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
 		mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(90), [0, 1.0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
 		spaceship.texture = sceneFrameBufferTexture;
 		spaceship.draw();		
+		// ########################################################################
+		// ########################################################################
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw spotlight
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		gl.enable(gl.DEPTH_TEST);
+		gl.useProgram(spotlight.program);
+		
+
+		
+/* 		//const invViewMatrix = mat3.create();
+		mat3.fromMat4(invViewMatrix, viewMatrix);
+		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		//const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+		//let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
+		// console.log("EyeDir: " + eyeDir); */
+		
+		matProjUniformLocation = gl.getUniformLocation(spotlight.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		matViewUniformLocation = gl.getUniformLocation(spotlight.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+		
+		mat4.identity(worldMatrix);
+		//mat4.rotate(worldMatrix, worldMatrix, Math.PI/2, [0, 1.0, 0]);
+		matWorldUniformLocation = gl.getUniformLocation(spotlight.program, 'mWorld');
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+		
+		spotlight.draw();
 		// ########################################################################
 		// ########################################################################
 	}
