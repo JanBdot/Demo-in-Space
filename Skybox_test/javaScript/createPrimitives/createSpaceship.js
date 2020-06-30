@@ -1,6 +1,7 @@
 async function createSpaceship(gl) {
 	let spaceship = {};
 
+	// const vertices = await fetchModel('./objects/box.obj')
 	const vertices = await fetchModel('./objects/spaceship-body.obj')
 
 	spaceship.vertexBufferObject = gl.createBuffer();
@@ -33,6 +34,7 @@ async function createSpaceship(gl) {
 		);
 		gl.enableVertexAttribArray(normalAttribLocation);
 
+		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
 
 		gl.drawArrays(gl.TRIANGLES, 0, vertices.length/8);

@@ -48,12 +48,13 @@ function createSkyBox(gl) {
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
-
+		
 		gl.enableVertexAttribArray(positionAttribLocation);
 		gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 		gl.disableVertexAttribArray(positionAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
 	}
 
 
@@ -130,4 +131,63 @@ function createSkyBoxNoPointStarsTexture(gl) {
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
 
 	return texture1;
+}
+
+function createSceneTexture(gl, framebuffer0, framebuffer1, framebuffer2, framebuffer3, framebuffer4, framebuffer5) {
+	const texture = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE1);
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+	// gl.bindTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X, texture0);
+	// gl.bindTexture(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, texture1);
+	// gl.bindTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, texture2);
+	// gl.bindTexture(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, texture3);
+	// gl.bindTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, texture4);
+	// gl.bindTexture(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, texture5);
+	// gl.TexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+	// 	0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture0);
+	// gl.TexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+	// 	0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,texture0);
+	// gl.TexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+	// 	0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,texture0);
+	// gl.TexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+	// 	0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,texture0);
+	// gl.TexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+	// 	0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,texture0);
+	// gl.TexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+	// 	0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,texture0);
+
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer0);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer1);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer2);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer3);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer4);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer5);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	// gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE); 
+
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+
+	return texture;
 }

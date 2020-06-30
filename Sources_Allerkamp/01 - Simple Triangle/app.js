@@ -93,7 +93,7 @@ var InitDemo = function () {
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertices), gl.STATIC_DRAW);
 
-	var positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
+	var positionAttribLocation = gl.getAttribLocation(program, 'vPosition');
 	var colorAttribLocation = gl.getAttribLocation(program, 'vertColor');
 	gl.vertexAttribPointer(
 		positionAttribLocation, // Attribute location
