@@ -19,6 +19,8 @@ var mouseXBuffer=0;
 var mouseYBuffer=0;
 var mouseXposition=0;
 var mouseYposition=0;
+var mouseLightControlX=0;
+var mouseLightControlY=0;
 var camDistance =15;
 let mousedown = false;
 
@@ -45,9 +47,17 @@ window.addEventListener('mousemove',function(e){
   });
 
 
+
 window.addEventListener('wheel',function(e) {
 	
 	if (camDistance + e.deltaY/20 >10) {
 		camDistance+= e.deltaY/20;		
 	}	
 });
+
+document.addEventListener("keydown", 
+    function(event) {
+        if(event.keyCode===32){
+            console.log("SPACE")  ;
+        }
+    });

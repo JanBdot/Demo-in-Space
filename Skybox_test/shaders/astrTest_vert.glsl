@@ -19,10 +19,13 @@ varying vec3 fLightDir;
 // TEST
 varying vec3 viewPosition;
 varying mat4 mViewFrag;
+//vertexAttribPointer
+varying vec3 fPosition;
 
 void main()
 {   //  view->World
     mViewFrag = mWorld;
+    fPosition=vPosition;
 /*     viewPosition.x = mView[3].x;
     viewPosition.y = mView[3].y;
     viewPosition.z = mView[3].z; */
@@ -38,4 +41,7 @@ void main()
     //fragNormal = mNormal * vNormal;
     fragNormal= (mWorld* vec4(vNormal, 0.0)).xyz	;
     gl_Position = mProj * mView * mWorld * vec4(vPosition, 1.0);
+
+
+
 }
