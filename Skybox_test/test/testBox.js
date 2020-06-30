@@ -78,7 +78,7 @@ async function createTextureBox(gl, texture2, texture3) {
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
 	box.texture2 = gl.createTexture();
-    gl.activeTexture(gl.TEXTURE2);
+    gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, box.texture2);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -87,7 +87,7 @@ async function createTextureBox(gl, texture2, texture3) {
     gl.bindTexture(gl.TEXTURE_2D, null);
     
 	box.texture3 = gl.createTexture();
-	gl.activeTexture(gl.TEXTURE3);
+	gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, box.texture3);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -125,10 +125,10 @@ async function createTextureBox(gl, texture2, texture3) {
 		const diffuseUniformLocation = gl.getUniformLocation(this.program, 'diffuseMap');
 		const normalMapUniformLocation = gl.getUniformLocation(this.program, 'normalMap');
 
-		gl.activeTexture(gl.TEXTURE2);
+		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, box.texture2);
         
-		gl.activeTexture(gl.TEXTURE3);
+		gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, box.texture3);
         
         gl.uniform1i(diffuseUniformLocation, 2);

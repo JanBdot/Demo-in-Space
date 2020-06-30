@@ -13,7 +13,7 @@ function spawnAsteroid(distanceToPlanet, angle, asteroidSeed) {
     mat4.translate(worldMatrix, worldMatrix, [0.0, asteroidSeed.translateY, 0.0]);
     
     // Must be called from loop (angle updates every frame)
-    mat4.rotate(worldMatrix, worldMatrix, angle/(asteroidSeed.rotationSpeed*3), [0, -1.0, 0.0]);
+    mat4.rotate(worldMatrix, worldMatrix, angle/(asteroidSeed.rotationSpeed*5), [0, -1.0, 0.0]);
 
     mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, asteroidSeed.distanceFromPlanet]);
     
@@ -42,7 +42,7 @@ function createRandomAsteroidSeed(asteroidObjects) {
     }
 
     let dist = 0
-    // while(!((dist >= 160 && dist <= 180) || (dist >= 220 && dist <= 235))) {
+    // while(!((dist >= 160 && dist <= 180))) {
     while(!((dist >= 160 && dist <= 197) || (dist >= 203 && dist <= 260))) {
         dist = Math.random()*100+160
     }
