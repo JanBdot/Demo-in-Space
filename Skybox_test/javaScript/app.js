@@ -22,8 +22,6 @@ async function InitDemo() {
 		return;
 	}
 
-
-
 	// Create additional frame buffer
 	console.log('Creating additional frame buffer ...');
 	const height = 512;
@@ -273,31 +271,6 @@ async function InitDemo() {
 
 		mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
-		// cameraXrotate = (mouseXposition/2000)*Math.PI;
-		// cameraPosition=[
-		// 	camDistance*Math.cos(mouseYposition*Math.PI/1000),
-		// 	-camDistance*Math.sin(mouseYposition*Math.PI/1000),0];
-
-		// mat4.identity(viewMatrix);
-		// mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
-		// mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]);
-
-		// gl.useProgram(strTest.program);
-
-		// var camDir =[
-		// 	cameraPosition[0]*Math.cos(cameraXrotate),
-		// 	cameraPosition[1],
-		// 	cameraPosition[0]*Math.sin(cameraXrotate)]
-		
-		// var camPosLocation = gl.getUniformLocation(strTest.program, 'cPos');
-		// console.log(
-		// 	Math.floor(camDir[0]),	
-		// 	Math.floor(camDir[1]),
-		// 	Math.floor(camDir[2]),
-		// )
-		// gl.uniform3f(camPosLocation,camDir[0],camDir[1],camDir[2]);
-		// //gl.uniform3f(camPosLocation,angle/2,angle/3,angle/6);
-
 		drawScene();
 		drawSpaceship();
 		
@@ -414,6 +387,8 @@ async function InitDemo() {
 		});		
 		// ########################################################################
 		// ########################################################################
+
+
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		// Draw StrTest
@@ -472,6 +447,50 @@ async function InitDemo() {
 
 		// ########################################################################
 		// ########################################################################
+
+
+		
+
+		// drawTestBoxes();
+	};
+
+	const drawSpaceship = function() {
+
+		const angle = performance.now() / 3000 / 6 * 2 * Math.PI;
+		
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Spaceship
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+
+		gl.useProgram(spaceship.program);
+
+		
+		const invViewMatrix = mat3.create();
+		mat3.fromMat4(invViewMatrix, viewMatrix);
+		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+		let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
+		// console.log("EyeDir: " + eyeDir);
+		
+		
+		let matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		let matViewUniformLocation = gl.getUniformLocation(spaceship.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+		
+		mat4.identity(worldMatrix);
+		let matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
+		mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(90), [0, 1.0, 0]);
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+
+		spaceship.texture = sceneFrameBufferTexture;
+		spaceship.draw();		
+
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		// Draw Cockpit
@@ -505,50 +524,10 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(cockpit.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		cockpit.draw();
-		
+		cockpit.draw();	
 		
 		// // ########################################################################
 		// // ########################################################################
-
-		// drawTestBoxes();
-	};
-
-	const drawSpaceship = function() {
-
-		const angle = performance.now() / 3000 / 6 * 2 * Math.PI;
-		// ------------------------------------------------------------------------
-		// ------------------------------------------------------------------------
-		// Draw Spaceship
-		// ------------------------------------------------------------------------
-		// ------------------------------------------------------------------------
-
-		gl.useProgram(spaceship.program);
-
-		
-		const invViewMatrix = mat3.create();
-		mat3.fromMat4(invViewMatrix, viewMatrix);
-		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
-		const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
-		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
-		let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
-		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
-		// console.log("EyeDir: " + eyeDir);
-		
-		
-		let matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		let matViewUniformLocation = gl.getUniformLocation(spaceship.program, 'mView');
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-		
-		mat4.identity(worldMatrix);
-		let matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
-		mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(90), [0, 1.0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
-		spaceship.texture = sceneFrameBufferTexture;
-		spaceship.draw();		
 		// ########################################################################
 		// ########################################################################
 		// ------------------------------------------------------------------------
