@@ -1,6 +1,10 @@
 # WebGl-Demo in Space
 *&copy; Jan Bär and Shahab Abtahi*
 
+## Live Demo
+  * [baerenspielplatz.de](https://baerenspielplatz.de/)
+
+
 ## Kompatibilität & Libraries
   * Diese Demo ist kompatibel mit WebGL1
   * Verwendete Libraries: *glMatrix*
