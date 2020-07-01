@@ -1,3 +1,5 @@
+// TODO : Delete File
+
 async function createBox(gl) {
 	var box = {};
 

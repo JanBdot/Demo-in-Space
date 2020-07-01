@@ -46,3 +46,43 @@ async function createSpaceship(gl) {
 
 	return spaceship;
 }
+
+function createSceneTexture(gl, framebuffer0, framebuffer1, framebuffer2, framebuffer3, framebuffer4, framebuffer5) {
+	const texture = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE1);
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer0);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer1);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer2);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer3);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer4);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer5);
+	gl.copyTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, 0, 0, 1024, 1024, 0);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+
+	return texture;
+}

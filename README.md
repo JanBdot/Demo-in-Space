@@ -21,23 +21,23 @@
   
   __Alle Fragment-Shader, außer der Skybox, nutzen das selbe struct (*LightAttr*) für Lighting, welches über eine uniform deklariert ist.__
   
+  * **Spotlight:**  
+  Das Raumschiff hat einen Scheinwerfer, damit dieser ein Spotlight auf die restlichenObjekte der Szene werden kann, muss das Spotlight in den Fragment Shadern der Objekte berücksichtigt werden. Das betrifft *earth, moon & asteroid*.
+  
   * **Earth:**  
   Ist zum größten Teil der Shader aus der Übung. Änderungen betreffen das Licht. Die *LightDirection* wird nun über die *LightPosition* ausgerechnet.
   
   * **Moon:**  
-  Teilt sich einen Verty Shader mit *earth* und unterscheidet sich sonst auch nur mit den Texturen. Für den Mond werden drei Texturen benutzt, eine diffuse-Map für die Grundfarbe, eine cloud-Map für Wolken und eine Textur für eine Moonbase.
-  
-  * **Asteroid:**  
-  BESCHREIBUNG
+  Teilt sich einen Verty Shader mit *earth* und unterscheidet sich sonst auch nur mit den Texturen. Für den Mond werden vier Texturen benutzt, eine diffuse-Map für die Grundfarbe, eine cloud-Map für Wolken und zwei Texturen für eine Moonbase mit Bewegung.
   
   * **Spaceship:**  
   Die Shader für das Raumschiff kümmern sich hauptsächlich um die "Reflektion" unter Berücksichtigung des Lichteinfalls. Die Reflektion wird über eine Cubemap (siehe *RenderToCubemap*) realisiert.
   
-  * **Spotlight:**  
-  BESCHREIBUNG
+  * **Asteroid:**  
+  Die Asteroid Shader, verarbeiten das Directional Light und das Spot Light und eine Textur. Die Randomisierung der Textur findet im JavaScript Code statt.
   
   * **Cockpit:**  
-  BESCHREIBUNG + TRANSPARENZ
+  Der Shader fürs Cockpit funktioniert ähnlich wie der für die Asteroiden, aber neutzt eine Farbe und Transparenz.
   
   ----
   
