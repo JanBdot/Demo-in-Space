@@ -351,8 +351,10 @@ async function InitDemo() {
 		
 		const moonBaseLocation = gl.getUniformLocation(moon.program, "sBase");
 		gl.uniform1i(moonBaseLocation, 0);
-		const moonBumpLocation = gl.getUniformLocation(moon.program, "sBump");
+		const moonBumpLocation = gl.getUniformLocation(moon.program, "sClouds");
 		gl.uniform1i(moonBumpLocation, 1);
+		const moonCarLocation = gl.getUniformLocation(moon.program, "sCar");
+		gl.uniform1i(moonCarLocation, 2);
 		
 		shiftUniformLocation = gl.getUniformLocation(moon.program, 'shift');
 		gl.uniform1f(shiftUniformLocation, angle/10);

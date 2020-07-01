@@ -12,7 +12,11 @@ uniform LightAttr light;
 
 uniform sampler2D sBase;
 uniform sampler2D sClouds;
+uniform sampler2D sCar;
 uniform float shift;
+
+uniform vec3 moonColor;
+
 varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying mat4 mViewFrag;
@@ -34,6 +38,7 @@ void main()
   float s = 10.0;
 
   vec3 base = texture2D(sBase, fTexCoord).rgb;
+  vec3 car = texture2D(sCar, fTexCoord - vec2(shift, 0.0)).rgb;
   float cloud = texture2D(sClouds, fTexCoord - vec2(shift, 0.0)).r;
 
   
@@ -42,7 +47,7 @@ void main()
   float specular = kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 
 
-	vec3 moonColor = (ambient + diffuse) * base;
+	vec3 moonColor = (ambient + diffuse) * base * car;
   vec3 cloudColor = vec3(1.0, 0.5, 0.2) * (ambient + diffuse);
 
   vec3 result = mix(moonColor, cloudColor, cloud);

@@ -129,6 +129,15 @@ async function createMoon(gl){
 	gl.generateMipmap(gl.TEXTURE_2D);
 	gl.bindTexture(gl.TEXTURE_2D, null);
 
+	moon.texture2 = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE2);
+	gl.bindTexture(gl.TEXTURE_2D, moon.texture2);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById("moon-car"));
+	gl.generateMipmap(gl.TEXTURE_2D);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+
 	moon.draw = function() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
 
@@ -164,6 +173,8 @@ async function createMoon(gl){
 		gl.bindTexture(gl.TEXTURE_2D, moon.texture0);
 		gl.activeTexture(gl.TEXTURE1);
 		gl.bindTexture(gl.TEXTURE_2D, moon.texture1);
+		gl.activeTexture(gl.TEXTURE2);
+		gl.bindTexture(gl.TEXTURE_2D, moon.texture2);
 
 		gl.enableVertexAttribArray(positionAttribLocation);
 		gl.enableVertexAttribArray(texCoordAttribLocation);
