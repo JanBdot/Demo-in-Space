@@ -1,4 +1,4 @@
-# CG1_Pflicht
+# Demo in Space
 
 ## Kompatibilität & Libraries
   * Diese Demo ist kompatibel mit WebGL1
