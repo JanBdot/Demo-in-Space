@@ -53,11 +53,11 @@
   
 ## Special
 
-  * **Render to Cubemap**  
+  * **Render to Cubemap:**  
   Für jeden Frame wird von der Position des Raumschiffs 6 Bilder (alle Richtungen) in den Framebuffer gerendert. Diese Textur wird dann beim Zeichnen der Gesamtszene als Textur für das Raumschiff verwendet, wodurch eine Spiegelung in Realtime simuliert wird.
   
-  * **Spotlight**  
+  * **Spotlight:**  
   Das Raumschiff hat einen Scheinwerfer, damit dieser ein Spotlight auf die restlichen Objekte der Szene werfen kann, muss das Spotlight in den Fragment Shadern der Objekte berücksichtigt werden. Das betrifft *earth, moon & asteroid*.
   
-  * **Super Secret Base on the Dark Side of the Moon  
+  * **Super Secret Base on the Dark Side of the Moon:**  
   Wenn man genau hinschaut, sieht man sogar die Menschen auf der Basis.
