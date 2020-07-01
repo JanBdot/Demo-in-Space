@@ -435,8 +435,8 @@ async function InitDemo() {
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 		
 		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [-20, 0.0, 0.0]);
-		mat4.scale(worldMatrix, worldMatrix, [1.0, 3.0, 1.0]);
+		mat4.translate(worldMatrix, worldMatrix, [-20-10*angle, 0.0, 0.0]);
+		mat4.scale(worldMatrix, worldMatrix, [1.0, 20.0, 20.0]);
 		
 		//var lightXrotate = (mouseLightControlY/2000)*Math.PI;
 		//mat4.rotate(worldMatrix,worldMatrix,lightXrotate,[0,1,0] );
