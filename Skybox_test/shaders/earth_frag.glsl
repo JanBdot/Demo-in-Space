@@ -17,8 +17,8 @@ uniform sampler2D sClouds;
 uniform float shift;
 varying vec2 fTexCoord;
 varying vec3 fNormal;
-varying vec3 fLightDir;
 varying mat4 mViewFrag;
+
 void main()
 {
   vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);

@@ -10,7 +10,6 @@ attribute vec3 vNormal;
 
 varying vec2 fTexCoord;
 varying vec3 fNormal;
-varying vec3 fLightDir;
 varying mat4 mViewFrag;
 
 void main()

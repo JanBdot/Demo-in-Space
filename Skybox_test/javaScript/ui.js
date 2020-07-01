@@ -54,7 +54,7 @@ window.addEventListener('wheel',function(e) {
 		camDistance+= e.deltaY/20;		
 	}	
 });
-
+ 
 document.addEventListener("keydown", 
     function(event) {
         if(event.keyCode===32){

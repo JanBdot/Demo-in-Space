@@ -18,7 +18,7 @@ uniform vec3 viewPos;
 uniform bool showNormalMapping;
 
 varying vec2 fTexCoord;
-varying vec3 fragNormal;
+varying vec3 fNormal;
 varying vec3 fragPos;
 varying vec3 fLightDir;
 varying vec3 viewPosition;
@@ -28,12 +28,12 @@ void main()
 {
 	vec3 objectColor = texture2D(diffuseMap, fTexCoord).rgb;
 
-	float ambientStrength = 0.1;
+	float ambientStrength = 0.05;
 	vec3 ambient = ambientStrength * light.ambient;
 
 	vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
-	vec3 normal = normalize(fragNormal);
-	vec3 viewPos = normalize(viewPosition);
+	vec3 normal = normalize(fNormal);
+	vec3 eyeDir = normalize(viewPosition);
 
 	// // if (showNormalMapping){
 	// // if (false){
@@ -45,7 +45,7 @@ void main()
 	float diffFactor = max(dot(normal, lightDir), 0.0);
 	vec3 diffuse = diffFactor * light.diffuse;
 
-	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 viewDir = normalize(eyeDir - fragPos);
 	float specFactor = 0.0;
 	vec3 halfDir = normalize(lightDir + viewDir);
 	specFactor = pow(max(dot(halfDir, normal), 0.0), 32.0);
