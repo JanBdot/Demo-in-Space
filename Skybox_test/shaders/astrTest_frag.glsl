@@ -73,7 +73,7 @@ void main()
 							(sunLightIntensity	* 
 							max(dot(fragNormal,sunLightDirection), 0.0));
 
-	//gl_FragColor = vec4(texel.rgb *lightIntensity, texel.a)	;  
+	gl_FragColor = vec4(texel.rgb *lightIntensity, 1.0)	;  
 	//gl_FragColor = vec4(objectColor *lightIntensity, 1.0)	;  
 
 	//TEST
@@ -85,17 +85,22 @@ void main()
 										light.position[1]-fragPos[2],
 										light.position[2]-fragPos[2]	) ); */
 	vec3 localLightDir = normalize( vec3(0.0-fragPos[0],
-										-5.0-fragPos[2],
+										5.0-fragPos[1],
 										0.0-fragPos[2]	) ); 
  	//vec3 lTest = (vec4(light.spLD,0.0)*mViewFrag).xyz;
 	vec3 lTest = light.spLD;
+	float light=0.0;
+	vec3 leftDot=localLightDir;
+	//vec3 rightDot=light.spLD;
 	if( 
 		//dot(localLightDir,light.spLD)>0.9 
-		3>1
+		dot(localLightDir,lTest)> 0.8
+		//3>1
 		){
-		float light = max(dot(normal,localLightDir),0.0);
-		gl_FragColor = vec4(objectColor*light,1.0);
-	}	 
+		 light = max(dot(normal,localLightDir),0.0);
+		//gl_FragColor = vec4(objectColor*light,1.0);
+		}	
+	gl_FragColor += vec4(texel.rgb*light,1.0); 
 		//vec3 lTest = normalize(light.spLD);
 		//float light = max(dot(normal,lTest),0.0);
 		//float light = max(dot(normal,localLightDir),0.0);

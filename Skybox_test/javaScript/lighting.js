@@ -3,12 +3,21 @@ const diffuse = [0.5, 0.5, 0.5];
 const specular = [0.4, 0.4, 0.4];
 let lampPos = [-1.0, 0.5, 1.0];
 //spotlight
-const  spotLightDir = [-1.0,0.0,0.0];
+
+var  spotLightDir = [
+    1,
+    0,
+    0];
+
+/* const  spotLightDir = [
+    Math.cos(mouseLightControlY*Math.PI/1000),
+    Math.sin(mouseLightControlY*Math.PI/1000),
+    0]; */
 
 
 function setUpLighting(gl, program){
     gl.useProgram(program);
-
+    
     
     const lightAmbientUniform = gl.getUniformLocation(program, "light.ambient");
     const lightDiffuseUniform = gl.getUniformLocation(program, "light.diffuse");
@@ -25,6 +34,7 @@ function setUpLighting(gl, program){
     gl.uniform3f(lightSpecularUniform, specular[0], specular[1], specular[2]);
     gl.uniform3f(lightPosUniform, lampPos[0], lampPos[1], lampPos[2]);
     //spotlight
+    //console.log(spotLightDir);
     gl.uniform3f(spotLightDirUniform, spotLightDir[0], spotLightDir[1], spotLightDir[2]);
 }
 
