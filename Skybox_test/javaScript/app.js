@@ -601,7 +601,7 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(cockpit.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		// cockpit.draw();	
+		cockpit.draw();	
 		
 		// // ########################################################################
 		// // ########################################################################
@@ -637,7 +637,7 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(spotlight.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		// spotlight.draw();
+		spotlight.draw();
 		// ########################################################################
 		// ########################################################################
 	}
