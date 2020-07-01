@@ -17,13 +17,15 @@ uniform sampler2D sClouds;
 uniform float shift;
 varying vec2 fTexCoord;
 varying vec3 fNormal;
-varying vec3 fLightDir;
 varying mat4 mViewFrag;
+
+varying vec3 fEyeDir;
+
 void main()
 {
   vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
   vec3 normalDir = normalize(fNormal);
-  vec3 eyeDir = vec3(0.0, 0.0, 1.0);
+  vec3 eyeDir = normalize(fEyeDir);
    
   float kAmbient = light.ambient.x;
   float kDiffuse = light.diffuse.x;

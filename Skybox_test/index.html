@@ -11,15 +11,13 @@
 		<script src="./javaScript/fetchModel.js"></script>
 		<script src="./javaScript/createShaderPrograms.js"></script>
 		<script src="./javaScript/createPrimitives/createSkybox.js"></script>
-		<script src="./javaScript/createPrimitives/createEarth.js"></script>
+		<script src="./javaScript/createPrimitives/createPlanets.js"></script>
 		<script src="./javaScript/createPrimitives/createSpaceship.js"></script>
 		<script src="./javaScript/createPrimitives/createCockpit.js"></script>
 		<script src="./javaScript/createPrimitives/createStrTest.js"></script>
 		<script src="./javaScript/createPrimitives/createSpotlight.js"></script>
-		<!-- <script src="./javaScript/createPrimitives/createTeapot.js"></script> -->
 		<script src="./javaScript/createPrimitives/createBox.js"></script>
 		<script src="./javaScript/createPrimitives/createAsteroid.js"></script>
-		<!-- <script src="./javaScript/createPrimitives/createPlane.js"></script> -->
 		
 		<script src="./test/testBox.js"></script>
 
@@ -29,7 +27,7 @@
 	<body>
 		<div id="uiContainer">
 			<div id="ui">
-				<p>Spawn asteroids:</p>
+				<span>Spawn asteroids:</span>
 				<div class="clickable" id="createAsteroidButton1">1</div>
 				<div class="clickable" id="createAsteroidButton10">10</div>
 				<div class="clickable" id="createAsteroidButton100">100</div>
@@ -37,7 +35,8 @@
 				<div class="clickable" id="createAsteroidButton10000">10.000</div>
 				<div class="clickable" id="clearAsteroids">clear</div>
 				<br>
-				<p>Lighting</p>
+				<span>Lighting</span>
+				<br>
 				<div id="formContainer">
 					<form >
 						<label id="ambientLabel" for="ambientInput">Ambient</label>
@@ -48,15 +47,14 @@
 						<input class="slider" type="range" min="0.0" max="50.0" value="4.0" id="specularInput">
 						<label for="posInput">Light Position</label>
 						<label for="xValue">x:</label>
-						<input id="xValue" type="number" value="-1.0">
+						<input id="xValue" type="number" value="-500.0">
 						<label for="yValue">y:</label>
-						<input id="yValue" type="number" value="0.5">
+						<input id="yValue" type="number" value="60.0">
 						<label for="zValue">z:</label>
-						<input id="zValue" type="number" value="1.0">
+						<input id="zValue" type="number" value="400.0">
 						<input id="coordButton" type="button" value="update">
 					</form>
 				</div>
-				<button id="showNormalMappingButton"></button> <br>
 			</div>
 		</div>
 		<div id="viewContainer">
@@ -77,7 +75,6 @@
 		<img id="sbNoPointStars-bottom" src="sourceimages/skybox/skybox_noPointStars/bottom.png" width="0" height="0"></img>
 		<img id="sbNoPointStars-back" src="sourceimages/skybox/skybox_noPointStars/back.png" width="0" height="0"></img>
 		<img id="sbNoPointStars-front" src="sourceimages/skybox/skybox_noPointStars/front.png" width="0" height="0"></img>
-		<!-- <img id="crate-image" src="sourceimages/RTS_Crate.png" width="0" height="0"></img> -->
 		<img id="asteroid1-diffuse" src="sourceimages/asteroid/Rock_039_baseColor.jpg" width="0" height="0"></img>
 		<img id="asteroid1-normal" src="sourceimages/asteroid/Rock_039_normal.jpg" width="0" height="0"></img>
 		<img id="asteroi1d-roughness" src="sourceimages/asteroid/Rock_039_roughness.jpg" width="0" height="0"></img>
@@ -88,8 +85,8 @@
 		<img id="asteroid2-normal" src="sourceimages/asteroid/rock_06_nor_1k.png" width="0" height="0"></img>
 		<img id="asteroid0-diffuse" src="./sourceimages/asteroid/rough_rock/Rough_rock_006_COLOR.png" width="0" height="0"></img>
 		<img id="asteroid0-normal" src="./sourceimages/asteroid/rough_rock/Rough_rock_006_NRM.png" width="0" height="0"></img>
-		<img id="moon-bump" src="sourceimages/moon/moonbump1k.jpg" width="0" height="0"></img>
-		<img id="moon-base" src="sourceimages/moon/moonmap1k.jpg" width="0" height="0"></img>
+		<img id="moon-base" src="sourceimages/moon/moon1024x512.jpg" width="0" height="0"></img>
+		<img id="moon-bump" src="sourceimages/moon/moon-clouds.jpg" width="0" height="0"></img>
 		<img id="earth-base" src="sourceimages/earth/2_no_clouds_8k.jpg" width="0" height="0"></img>
 		<img id="earth-bump" src="sourceimages/earth/elev_bump_8k.jpg" width="0" height="0"></img>
 		<img id="earth-albedo" src="sourceimages/earth/earth_albedo.png" width="0" height="0"></img>
