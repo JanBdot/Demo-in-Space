@@ -16,6 +16,9 @@ uniform float shift;
 varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying mat4 mViewFrag;
+varying mat4 fWorld;
+varying vec3 fragPos;
+varying vec3 spotLightNormal;
 
 varying vec3 fEyeDir;
 
@@ -45,4 +48,29 @@ void main()
   vec3 result = mix(moonColor, cloudColor, cloud);
 
   gl_FragColor = vec4(result, 1.0);
+
+  vec3 newLight = normalize(light.position);
+	vec3 locallightDirL =vec3(	0.0-fragPos[0],
+                             5.0-fragPos[1],
+						            		0.0-fragPos[2]);
+	vec3 localLightDir = normalize (vec3(	0.0-fragPos[0],
+								5.0-fragPos[1],
+								0.0-fragPos[2]));
+
+  float dirLength = length(locallightDirL);
+  vec3 lTest = light.spLD;
+	float light=0.0;
+	vec3 leftDot=localLightDir;
+if( 
+		dot(localLightDir,lTest)> 0.96
+		){
+		 light = max(dot(
+                normalize(spotLightNormal),
+                localLightDir), 
+                                0.0);
+		 if(light>0.0){
+			light*=1600.0/pow(dirLength,2.0);
+		 }
+		}
+gl_FragColor += vec4(result *light,1.0); 
 }

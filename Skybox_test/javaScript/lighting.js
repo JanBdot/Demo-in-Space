@@ -6,7 +6,7 @@ let lampPos = [-1.0, 0.5, 1.0];
 
 var  spotLightDir = [
     1,
-    0,
+    1,
     0];
 
 /* const  spotLightDir = [
