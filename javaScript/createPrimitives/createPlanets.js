@@ -94,7 +94,6 @@ async function createEarth(gl){
 		gl.disableVertexAttribArray(texCoordAttribLocation);
 		gl.disableVertexAttribArray(normalAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
-		//gl.enable(gl.DEPTH_TEST);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 
 	}
@@ -208,9 +207,7 @@ async function createMoon(gl){
 		gl.disableVertexAttribArray(texCoordAttribLocation);
 		gl.disableVertexAttribArray(normalAttribLocation);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
-		//gl.enable(gl.DEPTH_TEST);
 		gl.bindTexture(gl.TEXTURE_2D, null);
-
 	}
 	return moon;
 }

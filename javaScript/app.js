@@ -22,7 +22,7 @@ async function InitDemo() {
 		return;
 	}
 
-	// Create additional frame buffer
+	// Create additional frame buffer to hold CubeMap Texture for Spaceship
 	console.log('Creating additional frame buffer ...');
 	const height = 512;
 	const width = 512;
@@ -151,7 +151,7 @@ async function InitDemo() {
 		seedList.push(seedByProgramList);
 	});
 
-	// Button Event Listeners
+	// Register Button Event Listeners
     document.getElementById('createAsteroidButton1').addEventListener("click", function() {
         addAsteroidsToSeedList(asteroidObjects, seedList, 1);
     });
@@ -172,8 +172,16 @@ async function InitDemo() {
             seedByProgramList.length = 0;
         });	
     });	
+	document.getElementById('coordButton').addEventListener('click', function() {
+		let xyz = [];
+		xyz.push(document.getElementById('xValue').value*10);
+		xyz.push(document.getElementById('yValue').value*10);
+		xyz.push(document.getElementById('zValue').value*10);
+		changeLightPosition(xyz);
+		callForEachProgram(setUpLighting, programList, gl);
+	})
     
-    // Setup Lighting for Fragment Shaders 
+    // Setup Lighting for Fragment Shaders from UI
     callForEachProgram(setUpLighting, programList, gl);
     const ambientSlider = document.getElementById('ambientInput');
     const ambientLabel = document.getElementById('ambientLabel');
@@ -200,22 +208,8 @@ async function InitDemo() {
         specularLabel.innerHTML = "Specular: " + specularSlider.value/10;
         changeSpecular(specularSlider.value/10);
         callForEachProgram(setUpLighting, programList, gl);
-    }
-    document.getElementById('coordButton').addEventListener('click', function() {
-        let xyz = [];
-        xyz.push(document.getElementById('xValue').value);
-        xyz.push(document.getElementById('yValue').value);
-        xyz.push(document.getElementById('zValue').value);
-        changeLightPosition(xyz);
-        callForEachProgram(setUpLighting, programList, gl);
-    })
-	var testCP =vec3.create();
-	vec3.set(testCP,15,0.0,0.0);
-	// console.log(testCP);
+	}
 	
-	gl.clearColor(0.75, 0.85, 0.8, 1.0);
-	gl.enable(gl.DEPTH_TEST);
-
 	// init Main render loop
 	const worldMatrix = new Float32Array(16);
 	const viewMatrix = new Float32Array(16);
@@ -234,6 +228,7 @@ async function InitDemo() {
 
 		mat4.perspective(projMatrix, glMatrix.toRadian(90), width / height, 0.1, 1000.0);
 		
+		// Draw into offscreen Framebuffer
 		createCubeMapTexture();
 
 		// Draw into onscreen framebuffer
@@ -305,7 +300,7 @@ async function InitDemo() {
 
 		mat3.identity(invViewMatrix);
 		mat3.fromMat4(invViewMatrix, viewMatrix);
-		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		mat3.invert(invViewMatrix, invViewMatrix);
 		let eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
 		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
 		let eyeDirUniformLocation = gl.getUniformLocation(earth.program, 'eyeDir');
@@ -370,7 +365,7 @@ async function InitDemo() {
 
 		mat3.identity(invViewMatrix);
 		mat3.fromMat4(invViewMatrix, viewMatrix);
-		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		mat3.invert(invViewMatrix, invViewMatrix);
 		eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
 		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
 		eyeDirUniformLocation = gl.getUniformLocation(moon.program, 'eyeDir');
@@ -404,7 +399,7 @@ async function InitDemo() {
 		// Draw Asteroids
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
-		
+
 		// Double for-loop just for performance reasons		
 		seedList.forEach(seedByProgramList => {
 			if (seedByProgramList.length > 0) {
@@ -413,7 +408,7 @@ async function InitDemo() {
 
 				mat3.identity(invViewMatrix);		
 				mat3.fromMat4(invViewMatrix, viewMatrix);
-				mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+				mat3.invert(invViewMatrix, invViewMatrix);
 				const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
 				vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
 				let eyeDirUniformLocation = gl.getUniformLocation(program, 'eyeDir');
@@ -427,8 +422,7 @@ async function InitDemo() {
 				
 				matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
 				
-				const matNormalUniformLocation = gl.getUniformLocation(program, 'mWorldInverseTranspose');
-				
+				const matNormalUniformLocation = gl.getUniformLocation(program, 'mWorldInverseTranspose');				
 				
 				seedByProgramList.forEach(asteroidSeed => {
 					
@@ -553,13 +547,11 @@ async function InitDemo() {
 
 		mat3.identity(invViewMatrix);		
 		mat3.fromMat4(invViewMatrix, viewMatrix);
-		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		mat3.invert(invViewMatrix, invViewMatrix);
 		let eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
 		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
 		let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
-		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
-		// console.log("EyeDir: " + eyeDir);
-		
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);		
 		
 		let matProjUniformLocation = gl.getUniformLocation(spaceship.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -584,20 +576,10 @@ async function InitDemo() {
 		gl.enable(gl.CULL_FACE);
 		gl.useProgram(cockpit.program);
 
-		/* 		//const invViewMatrix = mat3.create();
-		mat3.fromMat4(invViewMatrix, viewMatrix);
-		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
-		//const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
-		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
-		//let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
-		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
-		// console.log("EyeDir: " + eyeDir); */
-
 		eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
 		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
 		eyeDirUniformLocation = gl.getUniformLocation(cockpit.program, 'eyeDir');
 		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
-		// console.log("EyeDir: " + eyeDir);
 		
 		matProjUniformLocation = gl.getUniformLocation(cockpit.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -618,10 +600,10 @@ async function InitDemo() {
 		
 		cockpit.draw();	
 		
-		// // ########################################################################
-		// // ########################################################################
 		// ########################################################################
 		// ########################################################################
+
+
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		// Draw spotlight
@@ -631,17 +613,6 @@ async function InitDemo() {
 		gl.disable(gl.CULL_FACE);
 		gl.useProgram(spotlight.program);
 		
-
-		
-/* 		//const invViewMatrix = mat3.create();
-		mat3.fromMat4(invViewMatrix, viewMatrix);
-		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
-		//const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
-		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
-		//let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
-		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
-		// console.log("EyeDir: " + eyeDir); */
-		
 		matProjUniformLocation = gl.getUniformLocation(spotlight.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 		
@@ -649,7 +620,6 @@ async function InitDemo() {
 		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 		
 		mat4.identity(worldMatrix);
-		//mat4.rotate(worldMatrix, worldMatrix, Math.PI/2, [0, 1.0, 0]);
 		matWorldUniformLocation = gl.getUniformLocation(spotlight.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		

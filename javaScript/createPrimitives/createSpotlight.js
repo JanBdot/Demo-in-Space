@@ -1,3 +1,5 @@
+// TODO : delete?
+
 async function createSpotlight(gl) {
 	let spotlight = {};
 

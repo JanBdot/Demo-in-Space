@@ -1,17 +1,4 @@
-function showNormalMappingFunc(gl, program, showNormalMapping){
-    let normalMappingUniformLocation = gl.getUniformLocation(program, 'showNormalMapping');
-    const button = document.getElementById('showNormalMappingButton');
-    
-    gl.useProgram(program);
-    
-    if (showNormalMapping) {
-        gl.uniform1i(normalMappingUniformLocation, 1);
-        button.innerHTML = "hide NormalMapping";
-    } else {
-        gl.uniform1i(normalMappingUniformLocation, 0);
-        button.innerHTML = "show NormalMapping";
-    }
-}
+// Adds Eventlisteners for buttons and mouse interaction 
 
 var mouseXStart=0;
 var mouseYStart=0;
@@ -54,8 +41,6 @@ window.addEventListener('mousemove',function(e){
         if((mouseLightControlY -mouseYStart + mouseYBuffer<400)
         && (mouseLightControlY -mouseYStart + mouseYBuffer>-400))
         {mouseLightControlY+= -mouseYStart + mouseYBuffer;}
-
-        
         
 /*         console.log(
             Math.floor( mouseLightControlY)+"= "+
@@ -65,9 +50,7 @@ window.addEventListener('mousemove',function(e){
         spotLightDir = [
             Math.cos(mouseLightControlY*Math.PI/1000)*Math.cos(mouseLightControlX*Math.PI/1000),
             Math.sin(mouseLightControlY*Math.PI/1000),
-            Math.sin(mouseLightControlX*Math.PI/1000)]; 
-        
-
+            Math.sin(mouseLightControlX*Math.PI/1000)];
     }
   });
 

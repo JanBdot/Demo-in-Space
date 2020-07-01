@@ -6,24 +6,23 @@ function spawnAsteroid(distanceToPlanet, angle, asteroidSeed) {
     // Puts it to the center of the planet (only z-Axis)
     mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, distanceToPlanet]);    
     
-    // Random radian rotation
+    // Random radian rotation and z-Offset of the asteroid belt
     mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(-5.0), [0.0, 0.0, 1.0]);
     mat4.rotate(worldMatrix, worldMatrix, asteroidSeed.radianAngleY, [0.0, 1.0, 0.0]);
-
-    // mat4.rotate(worldMatrix, worldMatrix, asteroidSeed.radianAngleZ, [0.0, 0.0, asteroidSeed.radianAxisY]);
     
-    // mat4.translate(worldMatrix, worldMatrix, [0.0, 10.0, 0.0]);
+    // Translate the asteroid by its random seed, so the belt ist not in a line and it gains volume
     mat4.translate(worldMatrix, worldMatrix, [0.0, asteroidSeed.translateY, 0.0]);
     
-    // Must be called from loop (angle updates every frame)
+    // Rotationspeed must be calculated with angle so it gets updated every frame. Represents the speed of the asteroid
     mat4.rotate(worldMatrix, worldMatrix, angle/(asteroidSeed.rotationSpeed*5), [0, -1.0, 0.0]);
 
+    // Translates the asteroid back from the center of the earth to its position in the belt
     mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, asteroidSeed.distanceFromPlanet]);
     
     // random scale between [5, 15]
     mat4.scale(worldMatrix, worldMatrix, [asteroidSeed.scale, asteroidSeed.scale, asteroidSeed.scale]);
     
-    // Random rotation speed and axis
+    // Random rotation speed around its own axis and axis
     mat4.rotate(worldMatrix, worldMatrix, (angle/asteroidSeed.rotationSpeed)*2, asteroidSeed.rotationAxis);
     
     return worldMatrix;
@@ -45,7 +44,6 @@ function createRandomAsteroidSeed(asteroidObjects) {
     }
 
     let dist = 0
-    // while(!((dist >= 160 && dist <= 180))) {
     while(!((dist >= 160 && dist <= 197) || (dist >= 203 && dist <= 260))) {
         dist = Math.random()*100+160
     }
@@ -63,11 +61,6 @@ function createRandomAsteroidSeed(asteroidObjects) {
 
     const random = Math.random();
     asteroidSeed.radianAxisY = random;
-    // if (random <= 0.5) {
-    //     asteroidSeed.radianAxisY = 1.0;
-    // } else {
-    //     asteroidSeed.radianAxisY = -1.0;        
-    // }
 
     asteroidSeed.rotationAxis = randomAxis3f();
 
@@ -76,7 +69,6 @@ function createRandomAsteroidSeed(asteroidObjects) {
     let number = Math.floor(Math.random() * (numberOfAsteroidTextures*numberOfAsteroidModels-1));
     asteroidSeed.asteroidObj = asteroidObjects[number];
     asteroidSeed.seedNumber = number;
-
 
     return asteroidSeed;
 }
@@ -93,10 +85,8 @@ function getTextureIDtext(id) {
     return textureID;
 }
 
-
 function addAsteroidsToSeedList(asteroidObjects, seedList, number){
-    for (let i = 0; i < number; i++) {		
-        // seedList.push(createRandomAsteroidSeed(asteroidObjects));
+    for (let i = 0; i < number; i++) {
         let obj = createRandomAsteroidSeed(asteroidObjects);        
         seedList[obj.seedNumber].push(obj);
     }

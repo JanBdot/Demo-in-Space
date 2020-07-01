@@ -1,3 +1,5 @@
+// TODO : delete?
+
 async function createStrTest(gl, textureID, modelID) {
 	var asteroid = {};
 
