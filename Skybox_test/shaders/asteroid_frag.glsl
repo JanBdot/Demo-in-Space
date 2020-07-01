@@ -23,6 +23,7 @@ varying vec3 fragPos;
 varying vec3 fLightDir;
 varying mat4 mViewFrag;
 varying vec3 fEyeDir;
+varying vec3 spotLightNormal;
 
 
 void main()
@@ -51,8 +52,34 @@ void main()
 	vec3 halfDir = normalize(lightDir + viewDir);
 	specFactor = pow(max(dot(halfDir, normal), 0.0), 32.0);
 	vec3 specular = specFactor * light.specular;
+	//spotlight
+  	////////////////////////////
+	vec3 locallightDirL =	vec3(0.0-fragPos[0],
+								5.0-fragPos[1],
+								0.0-fragPos[2]);
+	vec3 localLightDir = normalize (
+							vec3(0.0-fragPos[0],
+								5.0-fragPos[1],
+								0.0-fragPos[2]));
+	float dirLength = length(locallightDirL);								
+	vec3 lTest = light.spLD;
+	float light=0.0;
+	vec3 leftDot=localLightDir;
+	if( 
+		dot(localLightDir,lTest)> 0.96
+		){
+		 light = max(dot(
+                normalize(spotLightNormal),
+                localLightDir), 
+                                0.0);
+			if(light>0.0){
+			light*=5000.0/pow(dirLength,2.0);
+		 }					
+
+		}
 
 	vec3 result = (ambient + diffuse + specular ) * objectColor;
+	result +=light* objectColor;
 
 	gl_FragColor =  vec4(result, 1.0);
 }

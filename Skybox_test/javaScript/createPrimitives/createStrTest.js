@@ -3,7 +3,7 @@ async function createStrTest(gl, textureID, modelID) {
 
 	const textureIDtext = getTextureIDtext(textureID);
 	//const vertices = await fetchModel('./objects/asteroid' + modelID + '.obj');
-	const vertices = await fetchModel('./objects/bx' + modelID + '.obj');
+	const vertices = await fetchModel('./objects/asteroid' + modelID + '.obj');
 
 	asteroid.vertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, asteroid.vertexBufferObject);
