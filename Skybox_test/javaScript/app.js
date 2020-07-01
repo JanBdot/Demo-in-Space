@@ -104,7 +104,7 @@ async function InitDemo() {
 		for (let i = 0; i < numberOfAsteroidTextures; i++) {
 			const asteroid = await createAsteroid(gl, i, j);
 			// asteroid.program = await createShaderProgram(gl, './shaders/astrTest_vert.glsl', './shaders/astrTest_frag.glsl');
-			asteroid.program = await createShaderProgram(gl, './shaders/asteroid_vert.glsl', './shaders/asteroid_frag.glsl');
+			asteroid.program = await createShaderProgram(gl, './shaders/astrTest_vert.glsl', './shaders/astrTest_frag.glsl');
 			if (!asteroid.program) {
 				console.error('asteroid Cannot run without shader program!');
 				return;

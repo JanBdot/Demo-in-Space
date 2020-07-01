@@ -70,7 +70,7 @@ void main()
                 localLightDir), 
                                 0.0);
 		 if(light>0.0){
-			light*=2.0/pow(dirLength,2.0);
+			light*=5.0/pow(dirLength,2.0);
 		 }
 		}
 

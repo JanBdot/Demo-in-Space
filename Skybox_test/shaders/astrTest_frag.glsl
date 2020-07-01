@@ -69,8 +69,8 @@ void main()
 							(sunLightIntensity	* 
 							max(dot(fragNormal,sunLightDirection), 0.0));
 
-	gl_FragColor = vec4(texel.rgb *lightIntensity, 1.0)	;  
-	//gl_FragColor = vec4(objectColor *lightIntensity, 1.0)	;  
+	//gl_FragColor = vec4(texel.rgb *lightIntensity, 1.0)	;  
+	gl_FragColor = vec4(objectColor *lightIntensity, 1.0)	;  
 
 	//TEST
 	
@@ -106,11 +106,11 @@ void main()
 		 
 		//gl_FragColor = vec4(objectColor*light,1.0);
 		}	
-	gl_FragColor += vec4(texel.rgb*light,1.0); 
+	//gl_FragColor += vec4(texel.rgb*light,1.0); 
 		//vec3 lTest = normalize(light.spLD);
 		//float light = max(dot(normal,lTest),0.0);
 		//float light = max(dot(normal,localLightDir),0.0);
-		//gl_FragColor += vec4(objectColor*light,1.0);
+		gl_FragColor += vec4(objectColor*light,1.0);
 
 
 

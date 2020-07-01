@@ -29,8 +29,8 @@ void main()
     fEyeDir.z = mView[3].z;
     // fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
 
-    //fragPos = vec3(mWorld * vec4(vPosition, 1.0));
-    fragPos = vec3(mWorldInverseTranspose * vPosition);
+    fragPos = vec3(mWorld * vec4(vPosition, 1.0));
+    //fragPos = vec3(mWorldInverseTranspose * vPosition);
 
     // fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
     // fTexCoord = vTexCoord;

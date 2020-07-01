@@ -61,13 +61,15 @@ void main()
                 localLightDir), 
                                 0.0);
 			if(light>0.0){
-			light*=5000.0/pow(dirLength,2.0);
+			light*=1.0/pow(dirLength,2.0);
 		 }					
 
 		}
+	diffuse+= light* max(dot(spotLightNormal, locallightDirL), 0.0);
+  specular+= light * pow(max(dot(reflect(-locallightDirL, spotLightNormal), eyeDir), 0.0), s);
 
 	vec3 result = (ambient + diffuse + specular ) * texture;
-	result +=light* texture;
+	//result +=light* texture;
 
 	gl_FragColor =  vec4(result, 1.0);
 }
