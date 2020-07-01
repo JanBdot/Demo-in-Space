@@ -399,6 +399,8 @@ async function InitDemo() {
 		// Draw Asteroids
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
+		gl.enable(gl.DEPTH_TEST);
+		gl.disable(gl.CULL_FACE);
 
 		// Double for-loop just for performance reasons		
 		seedList.forEach(seedByProgramList => {
@@ -542,6 +544,8 @@ async function InitDemo() {
 		// Draw Spaceship
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
+		gl.enable(gl.DEPTH_TEST);
+		gl.disable(gl.CULL_FACE);
 
 		gl.useProgram(spaceship.program);
 
