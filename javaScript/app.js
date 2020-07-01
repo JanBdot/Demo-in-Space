@@ -554,7 +554,7 @@ async function InitDemo() {
 		mat3.identity(invViewMatrix);		
 		mat3.fromMat4(invViewMatrix, viewMatrix);
 		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
-		const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		let eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
 		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
 		let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
 		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
@@ -592,6 +592,12 @@ async function InitDemo() {
 		//let eyeDirUniformLocation = gl.getUniformLocation(spaceship.program, 'eyeDir');
 		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
 		// console.log("EyeDir: " + eyeDir); */
+
+		eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+		eyeDirUniformLocation = gl.getUniformLocation(cockpit.program, 'eyeDir');
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
+		// console.log("EyeDir: " + eyeDir);
 		
 		matProjUniformLocation = gl.getUniformLocation(cockpit.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);

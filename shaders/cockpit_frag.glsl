@@ -10,21 +10,18 @@ struct LightAttr
 };
 uniform LightAttr light;
 
-
-//uniform vec3 cAmbient;
-//uniform vec3 cDiffuse;
-//uniform vec3 cSpecular;
-//uniform float alpha;
-//varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying vec3 fLightDir;
 varying mat4 mViewFrag;
 varying vec4 fColor;
+varying vec3 fEyeDir;
+
+
 void main()
 {
   vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
   vec3 normalDir = normalize(fNormal);
-  vec3 eyeDir = vec3(0.0, 0.0, 1.0);
+  vec3 eyeDir = normalize(fEyeDir);
   
   float kAmbient = light.ambient.x;
   float kDiffuse = light.diffuse.x;
@@ -35,11 +32,8 @@ void main()
   float diffuse = kDiffuse * max(dot(normalDir, lightDir), 0.0);
   float specular = kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 
-  vec4 colorNight = vec4(0.0,0.0,0.0,1.0);
+  vec4 color = vec4(0.0,0.0,0.0,1.0);
 
-  vec3 nColor = mix(colorNight, fColor, ambient + diffuse + specular).rgb;
-  //light += cDiffuse * max(dot(normalDir, lightDir), 0.0);
-  //light += cSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), alpha);
-  gl_FragColor = vec4(nColor, 0.3);
- //gl_FragColor = fColor;
+  vec3 nColor = mix(color, fColor, ambient + diffuse + specular).rgb;
+  gl_FragColor = vec4(nColor, 0.4);
 }
