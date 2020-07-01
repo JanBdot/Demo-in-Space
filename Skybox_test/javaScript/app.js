@@ -235,7 +235,8 @@ async function InitDemo() {
 	const normalMatrix = new Float32Array(9);
 	const invViewMatrix = mat3.create();
 
-
+	let shiftDirectionPositive = true
+	let shiftX = 0;
 	let cameraPosition;
 	let cameraXrotate;
 	
@@ -349,15 +350,34 @@ async function InitDemo() {
 		gl.useProgram(moon.program);
 
 		
-		const moonBaseLocation = gl.getUniformLocation(moon.program, "sBase");
-		gl.uniform1i(moonBaseLocation, 0);
+		const moonDiffuseLocation = gl.getUniformLocation(moon.program, "sDiffuse");
+		gl.uniform1i(moonDiffuseLocation, 0);
 		const moonBumpLocation = gl.getUniformLocation(moon.program, "sClouds");
 		gl.uniform1i(moonBumpLocation, 1);
-		const moonCarLocation = gl.getUniformLocation(moon.program, "sCar");
-		gl.uniform1i(moonCarLocation, 2);
+		const moonPeople2Location = gl.getUniformLocation(moon.program, "sPeople2");
+		gl.uniform1i(moonPeople2Location, 2);
+		const moonBaseLocation = gl.getUniformLocation(moon.program, "sBase");
+		gl.uniform1i(moonBaseLocation, 3);
+		const moonPeopleLocation = gl.getUniformLocation(moon.program, "sPeople");
+		gl.uniform1i(moonPeopleLocation, 4);
 		
 		shiftUniformLocation = gl.getUniformLocation(moon.program, 'shift');
 		gl.uniform1f(shiftUniformLocation, angle/10);
+		
+		const shiftXUniformLocation = gl.getUniformLocation(moon.program, 'shiftX');
+		gl.uniform1f(shiftXUniformLocation, shiftX/70000);
+
+		if (shiftDirectionPositive){
+			shiftX = shiftX + 1; 
+		} else {
+			shiftX = shiftX - 1;
+		}		
+		if (shiftX === 150 && shiftDirectionPositive) {
+			shiftDirectionPositive = false;
+		}
+		if (shiftX === -150 && !shiftDirectionPositive) {
+			shiftDirectionPositive = true;
+		}
 
 		mat3.identity(invViewMatrix);
 		mat3.fromMat4(invViewMatrix, viewMatrix);
@@ -377,8 +397,8 @@ async function InitDemo() {
 		
 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -200.0]);
-    	mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(20), [0.0, 0.0, 1.0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle/(3.0), [0, -1.0, 0.0]);
+    	// mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(20), [0.0, 0.0, 1.0]);
+		// mat4.rotate(worldMatrix, worldMatrix, angle/(3.0), [0, -1.0, 0.0]);
 
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 300.0]);
 		mat4.scale(worldMatrix, worldMatrix, [30.0, 30.0, 30.0]);
