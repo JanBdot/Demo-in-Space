@@ -1,4 +1,5 @@
-# CG1_Pflicht
+# Demo in Space
+*&copy; Jan Bär and Shahab Abtahi*
 
 ## Kompatibilität & Libraries
   * Diese Demo ist kompatibel mit WebGL1
