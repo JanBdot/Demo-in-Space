@@ -32,6 +32,8 @@ window.addEventListener('mousedown', function(){
 });
 
 window.addEventListener('mouseup', function(){
+    mouseXStart=0;
+    mouseYStart=0;
     mousedown = false;
 });
 
@@ -46,13 +48,24 @@ window.addEventListener('mousemove',function(e){
         // console.log(mouseXposition+" "+mouseYposition);
     }
     if((spaceBar)){
-        mouseLightControlX+= mouseXStart - mouseXBuffer;
-        mouseLightControlY+= mouseYStart - mouseYBuffer;
+        if((mouseLightControlX +mouseXStart - mouseXBuffer<400)
+        && (mouseLightControlX +mouseXStart - mouseXBuffer>-400))
+        {mouseLightControlX+= mouseXStart - mouseXBuffer;}
+        if((mouseLightControlY -mouseYStart + mouseYBuffer<400)
+        && (mouseLightControlY -mouseYStart + mouseYBuffer>-400))
+        {mouseLightControlY+= -mouseYStart + mouseYBuffer;}
+
+        
+        
+/*         console.log(
+            Math.floor( mouseLightControlY)+"= "+
+            Math.floor(mouseYStart)+" +"+
+            Math.floor( mouseYBuffer)); */
         
         spotLightDir = [
-            Math.cos(mouseLightControlY*Math.PI/5000),
-            Math.sin(mouseLightControlY*Math.PI/5000),
-            0]; 
+            Math.cos(mouseLightControlY*Math.PI/1000)*Math.cos(mouseLightControlX*Math.PI/1000),
+            Math.sin(mouseLightControlY*Math.PI/1000),
+            Math.sin(mouseLightControlX*Math.PI/1000)]; 
         
 
     }
@@ -72,7 +85,10 @@ document.addEventListener("keydown",
     function(event) {
         if(event.keyCode===32){
             spaceBar=true;
-            console.log("SPACE ON")  ;
+            //console.log("SPACE ON")  ;
+            mouseXStart=mouseXBuffer;
+            mouseYStart=mouseYBuffer;
+            
         }
     });
 
@@ -80,6 +96,8 @@ document.addEventListener('keyup',
     function (evt) {
         if (evt.keyCode === 32) {
             spaceBar=false;
-            console.log("SPACE OFF") 
+            //console.log("SPACE OFF") 
+            mouseXStart=0;
+            mouseYStart=0;
         }
 });

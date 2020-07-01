@@ -84,9 +84,14 @@ void main()
 /* 	vec3 localLightDir = normalize( vec3(light.position[0]-fragPos[0],
 										light.position[1]-fragPos[2],
 										light.position[2]-fragPos[2]	) ); */
-	vec3 localLightDir = normalize( vec3(0.0-fragPos[0],
-										5.0-fragPos[1],
-										0.0-fragPos[2]	) ); 
+	vec3 locallightDirL =vec3(	0.0-fragPos[0],
+								5.0-fragPos[1],
+								0.0-fragPos[2]);
+	vec3 localLightDir = normalize (vec3(	0.0-fragPos[0],
+								5.0-fragPos[1],
+								0.0-fragPos[2])); 
+	float dirLength = length(locallightDirL);
+
  	//vec3 lTest = (vec4(light.spLD,0.0)*mViewFrag).xyz;
 	vec3 lTest = light.spLD;
 	float light=0.0;
@@ -94,10 +99,15 @@ void main()
 	//vec3 rightDot=light.spLD;
 	if( 
 		//dot(localLightDir,light.spLD)>0.9 
-		dot(localLightDir,lTest)> 0.8
+		dot(localLightDir,lTest)> 0.96
 		//3>1
 		){
 		 light = max(dot(normal,localLightDir),0.0);
+		 if(light>0.0){
+			//light*=0.2 / pow(dirLength,2.0);
+			light*=1600.0/pow(dirLength,2.0);
+		 }
+		 
 		//gl_FragColor = vec4(objectColor*light,1.0);
 		}	
 	gl_FragColor += vec4(texel.rgb*light,1.0); 
