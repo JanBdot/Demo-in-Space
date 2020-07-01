@@ -10,9 +10,7 @@ struct LightAttr
 };
 uniform LightAttr light;
 
-uniform sampler2D sDay;
-uniform sampler2D sNight;
-uniform sampler2D sOcean;
+uniform sampler2D sBase;
 uniform sampler2D sClouds;
 uniform float shift;
 varying vec2 fTexCoord;
@@ -30,20 +28,21 @@ void main()
   float kAmbient = light.ambient.x;
   float kDiffuse = light.diffuse.x;
   float kSpecular = light.specular.x;
-  float s = 70.0;
+  float s = 10.0;
 
-  vec4 colorDay = texture2D(sDay, fTexCoord);
-  vec4 colorNight = texture2D(sNight, fTexCoord);
-  float spec = texture2D(sOcean, fTexCoord).r;
+  vec3 base = texture2D(sBase, fTexCoord).rgb;
   float cloud = texture2D(sClouds, fTexCoord - vec2(shift, 0.0)).r;
 
+  
   float ambient = kAmbient / 10.0;
   float diffuse = kDiffuse * max(dot(normalDir, lightDir), 0.0);
-  float specular = spec * kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
+  float specular = kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 
-  vec3 earthColor = mix(colorNight, colorDay, ambient + diffuse + specular).rgb;
-  vec3 cloudColor = vec3(1.0, 1.0, 1.0) * (ambient + diffuse);
 
-  vec3 mixColor = mix(earthColor, cloudColor, cloud);
-  gl_FragColor = vec4(mixColor, 1.0);
+	vec3 moonColor = (ambient + diffuse) * base;
+  vec3 cloudColor = vec3(1.0, 0.5, 0.2) * (ambient + diffuse);
+
+  vec3 result = mix(moonColor, cloudColor, cloud);
+
+  gl_FragColor = vec4(result, 1.0);
 }

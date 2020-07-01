@@ -11,7 +11,7 @@
 		<script src="./javaScript/fetchModel.js"></script>
 		<script src="./javaScript/createShaderPrograms.js"></script>
 		<script src="./javaScript/createPrimitives/createSkybox.js"></script>
-		<script src="./javaScript/createPrimitives/createEarth.js"></script>
+		<script src="./javaScript/createPrimitives/createPlanets.js"></script>
 		<script src="./javaScript/createPrimitives/createSpaceship.js"></script>
 		<script src="./javaScript/createPrimitives/createCockpit.js"></script>
 		<script src="./javaScript/createPrimitives/createStrTest.js"></script>
@@ -27,7 +27,7 @@
 	<body>
 		<div id="uiContainer">
 			<div id="ui">
-				<p>Spawn asteroids:</p>
+				<span>Spawn asteroids:</span>
 				<div class="clickable" id="createAsteroidButton1">1</div>
 				<div class="clickable" id="createAsteroidButton10">10</div>
 				<div class="clickable" id="createAsteroidButton100">100</div>
@@ -35,7 +35,8 @@
 				<div class="clickable" id="createAsteroidButton10000">10.000</div>
 				<div class="clickable" id="clearAsteroids">clear</div>
 				<br>
-				<p>Lighting</p>
+				<span>Lighting</span>
+				<br>
 				<div id="formContainer">
 					<form >
 						<label id="ambientLabel" for="ambientInput">Ambient</label>
@@ -54,7 +55,6 @@
 						<input id="coordButton" type="button" value="update">
 					</form>
 				</div>
-				<button id="showNormalMappingButton"></button> <br>
 			</div>
 		</div>
 		<div id="viewContainer">
@@ -85,8 +85,8 @@
 		<img id="asteroid2-normal" src="sourceimages/asteroid/rock_06_nor_1k.png" width="0" height="0"></img>
 		<img id="asteroid0-diffuse" src="./sourceimages/asteroid/rough_rock/Rough_rock_006_COLOR.png" width="0" height="0"></img>
 		<img id="asteroid0-normal" src="./sourceimages/asteroid/rough_rock/Rough_rock_006_NRM.png" width="0" height="0"></img>
-		<img id="moon-bump" src="sourceimages/moon/moonbump1k.jpg" width="0" height="0"></img>
-		<img id="moon-base" src="sourceimages/moon/moonmap1k.jpg" width="0" height="0"></img>
+		<img id="moon-base" src="sourceimages/moon/moon1024x512.jpg" width="0" height="0"></img>
+		<img id="moon-bump" src="sourceimages/moon/moon-clouds.jpg" width="0" height="0"></img>
 		<img id="earth-base" src="sourceimages/earth/2_no_clouds_8k.jpg" width="0" height="0"></img>
 		<img id="earth-bump" src="sourceimages/earth/elev_bump_8k.jpg" width="0" height="0"></img>
 		<img id="earth-albedo" src="sourceimages/earth/earth_albedo.png" width="0" height="0"></img>

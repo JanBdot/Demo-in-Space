@@ -123,6 +123,16 @@ async function InitDemo() {
 		return;
 	}
 	programList.push(earth.program);
+
+	// Create earth objects
+	console.log('Creating moon objects ...');
+	const moon = await createMoon(gl);
+	moon.program = await createShaderProgram(gl, './shaders/earth_vert.glsl', './shaders/moon_frag.glsl');
+	if (!moon.program) {
+		console.error('moon Cannot run without shader program!');
+		return;
+	}
+	programList.push(moon.program);
 	
 	// Create spaceship object
 	console.log('Creating spaceship object ...');
@@ -154,35 +164,6 @@ async function InitDemo() {
 	});
 
 	// Button Event Listeners
-    
-    let normalMapping = true;
-    const showNormalMappingButton = document.getElementById('showNormalMappingButton');
-    
-    showNormalMappingButton.addEventListener("click", function() {
-        if (normalMapping){
-            asteroidObjects.forEach(asteroid => {
-                showNormalMappingFunc(gl, asteroid.program, false);						
-            });	
-            normalMapping = false;
-        } else{
-            asteroidObjects.forEach(asteroid => {
-                showNormalMappingFunc(gl, asteroid.program, true);
-            });	
-            normalMapping = true;
-        }
-    });
-    if (normalMapping){
-        asteroidObjects.forEach(asteroid => {
-            showNormalMappingFunc(gl, asteroid.program, false);						
-        });	
-        normalMapping = false;
-    } else{
-        asteroidObjects.forEach(asteroid => {
-            showNormalMappingFunc(gl, asteroid.program, true);
-        });	
-        normalMapping = true;
-    }
-    
     document.getElementById('createAsteroidButton1').addEventListener("click", function() {
         addAsteroidsToSeedList(asteroidObjects, seedList, 1);
     });
@@ -252,6 +233,8 @@ async function InitDemo() {
 	const viewMatrix = new Float32Array(16);
 	const projMatrix = new Float32Array(16);
 	const normalMatrix = new Float32Array(9);
+	const invViewMatrix = mat3.create();
+
 
 	let cameraPosition;
 	let cameraXrotate;
@@ -327,8 +310,16 @@ async function InitDemo() {
 		const samplerCloudLocation = gl.getUniformLocation(earth.program, "sClouds");
 		gl.uniform1i(samplerCloudLocation, 3);
 		
-		const shiftUniformLocation = gl.getUniformLocation(earth.program, 'shift');
-		gl.uniform1f(shiftUniformLocation, angle/90);
+		let shiftUniformLocation = gl.getUniformLocation(earth.program, 'shift');
+		gl.uniform1f(shiftUniformLocation, angle/110);
+
+		mat3.identity(invViewMatrix);
+		mat3.fromMat4(invViewMatrix, viewMatrix);
+		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		let eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+		let eyeDirUniformLocation = gl.getUniformLocation(earth.program, 'eyeDir');
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
 		
 		matProjUniformLocation = gl.getUniformLocation(earth.program, 'mProj');
 		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -347,6 +338,54 @@ async function InitDemo() {
 		earth.draw();
 		// ########################################################################
 		// ########################################################################
+
+
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Draw Moon
+		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
+		gl.enable(gl.DEPTH_TEST);
+		gl.useProgram(moon.program);
+
+		
+		const moonBaseLocation = gl.getUniformLocation(moon.program, "sBase");
+		gl.uniform1i(moonBaseLocation, 0);
+		const moonBumpLocation = gl.getUniformLocation(moon.program, "sBump");
+		gl.uniform1i(moonBumpLocation, 1);
+		
+		shiftUniformLocation = gl.getUniformLocation(moon.program, 'shift');
+		gl.uniform1f(shiftUniformLocation, angle/10);
+
+		mat3.identity(invViewMatrix);
+		mat3.fromMat4(invViewMatrix, viewMatrix);
+		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+		eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+		vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+		eyeDirUniformLocation = gl.getUniformLocation(moon.program, 'eyeDir');
+		gl.uniform3fv(eyeDirUniformLocation, eyeDir);
+		
+		matProjUniformLocation = gl.getUniformLocation(moon.program, 'mProj');
+		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
+		
+		matViewUniformLocation = gl.getUniformLocation(moon.program, 'mView');
+		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+		
+		matWorldUniformLocation = gl.getUniformLocation(moon.program, 'mWorld');
+		
+		mat4.identity(worldMatrix);
+		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -200.0]);
+    	mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(20), [0.0, 0.0, 1.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle/(3.0), [0, -1.0, 0.0]);
+
+		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 300.0]);
+		mat4.scale(worldMatrix, worldMatrix, [30.0, 30.0, 30.0]);
+		// mat4.rotate(worldMatrix, worldMatrix, angle/8, [0, -1, 0]);
+		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+		
+		moon.draw();
+		// ########################################################################
+		// ########################################################################
 		
 		
 		// ------------------------------------------------------------------------
@@ -360,6 +399,14 @@ async function InitDemo() {
 			if (seedByProgramList.length > 0) {
 				let program = seedByProgramList[0].asteroidObj.program;			
 				gl.useProgram(program);
+
+				mat3.identity(invViewMatrix);		
+				mat3.fromMat4(invViewMatrix, viewMatrix);
+				mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
+				const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
+				vec3.transformMat3(eyeDir, eyeDir, invViewMatrix);
+				let eyeDirUniformLocation = gl.getUniformLocation(program, 'eyeDir');
+				gl.uniform3fv(eyeDirUniformLocation, eyeDir);
 				
 				matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
 				gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
@@ -454,7 +501,7 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		strTest.draw();
+		// strTest.draw();
 
 /* 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 10.0]);
@@ -497,8 +544,7 @@ async function InitDemo() {
 
 		gl.useProgram(spaceship.program);
 
-		
-		const invViewMatrix = mat3.create();
+		mat3.identity(invViewMatrix);		
 		mat3.fromMat4(invViewMatrix, viewMatrix);
 		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
 		const eyeDir = vec3.fromValues(0.0, 0.0, 1.0);
@@ -516,7 +562,7 @@ async function InitDemo() {
 		
 		mat4.identity(worldMatrix);
 		let matWorldUniformLocation = gl.getUniformLocation(spaceship.program, 'mWorld');
-		//mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(90), [0, 1.0, 0]);
+		mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(45), [0, 1.0, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
 		spaceship.texture = sceneFrameBufferTexture;
@@ -555,7 +601,7 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(cockpit.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		cockpit.draw();	
+		// cockpit.draw();	
 		
 		// // ########################################################################
 		// // ########################################################################
@@ -591,7 +637,7 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(spotlight.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		spotlight.draw();
+		// spotlight.draw();
 		// ########################################################################
 		// ########################################################################
 	}

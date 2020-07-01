@@ -15,15 +15,15 @@ varying vec3 fragPos;
 varying vec3 fLightDir;
 
 // TEST
-varying vec3 viewPosition;
+varying vec3 fEyeDir;
 varying mat4 mViewFrag;
 
 void main()
 {
     mViewFrag = mView;
-    viewPosition.x = mView[3].x;
-    viewPosition.y = mView[3].y;
-    viewPosition.z = mView[3].z;
+    fEyeDir.x = mView[3].x;
+    fEyeDir.y = mView[3].y;
+    fEyeDir.z = mView[3].z;
     // fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
     fragPos = vec3(mWorld * vec4(vPosition, 1.0));
     // fLightDir = (mView * vec4(lightDir, 0.0)).xyz;

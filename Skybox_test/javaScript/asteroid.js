@@ -7,9 +7,12 @@ function spawnAsteroid(distanceToPlanet, angle, asteroidSeed) {
     mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, distanceToPlanet]);    
     
     // Random radian rotation
+    mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(-5.0), [0.0, 0.0, 1.0]);
     mat4.rotate(worldMatrix, worldMatrix, asteroidSeed.radianAngleY, [0.0, 1.0, 0.0]);
+
     // mat4.rotate(worldMatrix, worldMatrix, asteroidSeed.radianAngleZ, [0.0, 0.0, asteroidSeed.radianAxisY]);
     
+    // mat4.translate(worldMatrix, worldMatrix, [0.0, 10.0, 0.0]);
     mat4.translate(worldMatrix, worldMatrix, [0.0, asteroidSeed.translateY, 0.0]);
     
     // Must be called from loop (angle updates every frame)

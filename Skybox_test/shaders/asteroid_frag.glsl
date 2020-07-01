@@ -21,8 +21,9 @@ varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying vec3 fragPos;
 varying vec3 fLightDir;
-varying vec3 viewPosition;
 varying mat4 mViewFrag;
+varying vec3 fEyeDir;
+
 
 void main()
 {
@@ -33,7 +34,7 @@ void main()
 
 	vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
 	vec3 normal = normalize(fNormal);
-	vec3 eyeDir = normalize(viewPosition);
+	vec3 eyeDir = normalize(fEyeDir);
 
 	// // if (showNormalMapping){
 	// // if (false){
