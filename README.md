@@ -1,4 +1,4 @@
-# Demo in Space
+# WebGl-Demo in Space
 *&copy; Jan Bär and Shahab Abtahi*
 
 ## Kompatibilität & Libraries
