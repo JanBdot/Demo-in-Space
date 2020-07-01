@@ -397,8 +397,8 @@ async function InitDemo() {
 		
 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -200.0]);
-    	// mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(20), [0.0, 0.0, 1.0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle/(3.0), [0, -1.0, 0.0]);
+    	mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(20), [0.0, 0.0, 1.0]);
+		mat4.rotate(worldMatrix, worldMatrix, angle/(3.0), [0, -1.0, 0.0]);
 
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 300.0]);
 		mat4.scale(worldMatrix, worldMatrix, [30.0, 30.0, 30.0]);
