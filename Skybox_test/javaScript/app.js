@@ -124,7 +124,7 @@ async function InitDemo() {
 	}
 	programList.push(earth.program);
 
-	// Create earth objects
+	// Create moon objects
 	console.log('Creating moon objects ...');
 	const moon = await createMoon(gl);
 	moon.program = await createShaderProgram(gl, './shaders/earth_vert.glsl', './shaders/moon_frag.glsl');
@@ -143,18 +143,6 @@ async function InitDemo() {
 		return;
 	}
 	programList.push(spaceship.program);
-	
-	// Create Testbox
-	console.log('Create Testbox ...');
-	// const testBox = await createBox(gl);
-	// testBox.program = await createShaderProgram(gl, './test/testShaders/simpleNormalVert.glsl', './test/testShaders/simpleNormalFrag.glsl');
-	const testBox = await createColorBox(gl);
-	testBox.program = await createShaderProgram(gl, './test/testShaders/simpleColorShader/simpleColorVert.glsl', './test/testShaders/simpleColorShader/simpleColorFrag.glsl');
-	if (!testBox.program) {
-		console.error('testBox Cannot run without shader program!');
-		return;
-	}
-	programList.push(testBox.program);
 	
 	// Init seedList Matrix
 	const seedList = [];
@@ -251,7 +239,7 @@ async function InitDemo() {
 		// Draw into onscreen framebuffer
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		gl.viewport(0, 0, canvas.width, canvas.height);
-		gl.clearColor(0.3, 0.3, 0.3, 1.0);
+		gl.clearColor(1.0, 1.0, 1.0, 1.0);
 		gl.depthMask(true);
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 		gl.enable(gl.DEPTH_TEST);
@@ -397,19 +385,14 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(moon.program, 'mWorld');
 		
 		mat4.identity(worldMatrix);
- 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -200.0]);
+		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, -200.0]);
     	mat4.rotate(worldMatrix, worldMatrix, glMatrix.toRadian(20), [0.0, 0.0, 1.0]);
 		mat4.rotate(worldMatrix, worldMatrix, angle/(3.0), [0, -1.0, 0.0]);
 
-		
-
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 300.0]);
 		mat4.scale(worldMatrix, worldMatrix, [30.0, 30.0, 30.0]);
-		 mat4.rotate(worldMatrix, worldMatrix, angle/8, [0, -1, 0]);
-		//mat4.translate(worldMatrix, worldMatrix, [-3.0, 0.0, 0.0]);
+		// mat4.rotate(worldMatrix, worldMatrix, angle/8, [0, -1, 0]);
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
-		
 		
 		moon.draw();
 		// ########################################################################
@@ -512,7 +495,7 @@ async function InitDemo() {
 		
 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [-20-10*angle, 0.0, 0.0]);
-		mat4.scale(worldMatrix, worldMatrix, [1.0, 2.0, 2.0]);
+		mat4.scale(worldMatrix, worldMatrix, [1.0, 20.0, 20.0]);
 		
 		//var lightXrotate = (mouseLightControlY/2000)*Math.PI;
 		//mat4.rotate(worldMatrix,worldMatrix,lightXrotate,[0,1,0] );
@@ -529,7 +512,7 @@ async function InitDemo() {
 		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
 		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 		
-		strTest.draw();
+		// strTest.draw();
 
 /* 		mat4.identity(worldMatrix);
 		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 10.0]);

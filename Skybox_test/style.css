@@ -8,17 +8,31 @@ html, body {
    }
 
 
-#uiContainer {
+.container {
+    background: rgba(0,0,0,0.5);
+    color: white;    
+    border-radius: 10px;
+    padding: 10px;
     z-index: 3;
     position: absolute;
+  }
+  
+  #copyright {
+    padding: 5px;
+    z-index: 3;
+    position: absolute;
+    /* left: 50%;
+    margin-left: -100px; */
+    left: 10px;
+    width: 200px;
+    bottom: 10px;
+}
+
+#uiContainer {
     top: 10px;
     left: 10px;
     width: 100px;
-    background: rgba(0,0,0,0.5);
-    color: white;
     /* font-size: xx-small; */
-    border-radius: 10px;
-    padding: 10px;
 }
 
 #viewContainer {
