@@ -46,6 +46,40 @@ void main()
   float diffuse = kDiffuse * max(dot(normalDir, lightDir), 0.0);
   float specular = kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 
+  //spotlight
+  ////////////////////////////
+  vec3 newLight = normalize(light.position);
+	vec3 locallightDirL =vec3(	0.0-fragPos[0],
+                             5.0-fragPos[1],
+						            		0.0-fragPos[2]);
+	vec3 localLightDir = normalize (vec3(	0.0-fragPos[0],
+								5.0-fragPos[1],
+								0.0-fragPos[2]));
+  float dirLength = length(locallightDirL);
+  vec3 lTest = light.spLD;
+	float light=0.0;
+	vec3 leftDot=localLightDir;
+  if( 
+		dot(localLightDir,lTest)> 0.97
+		){
+		 light = max(dot(
+                normalize(spotLightNormal),
+                localLightDir), 
+                                0.0);
+		 if(light>0.0){
+			light*=2.0/pow(dirLength,2.0);
+		 }
+		}
+
+
+
+  diffuse+= light* max(dot(spotLightNormal, locallightDirL), 0.0);
+  specular+= light * pow(max(dot(reflect(-locallightDirL, spotLightNormal), eyeDir), 0.0), s);
+
+
+
+  
+
 
 	vec3 moonColor = (ambient + diffuse) * base * car;
   vec3 cloudColor = vec3(1.0, 0.5, 0.2) * (ambient + diffuse);
@@ -54,28 +88,10 @@ void main()
 
   gl_FragColor = vec4(result, 1.0);
 
-  vec3 newLight = normalize(light.position);
-	vec3 locallightDirL =vec3(	0.0-fragPos[0],
-                             5.0-fragPos[1],
-						            		0.0-fragPos[2]);
-	vec3 localLightDir = normalize (vec3(	0.0-fragPos[0],
-								5.0-fragPos[1],
-								0.0-fragPos[2]));
 
-  float dirLength = length(locallightDirL);
-  vec3 lTest = light.spLD;
-	float light=0.0;
-	vec3 leftDot=localLightDir;
-if( 
-		dot(localLightDir,lTest)> 0.96
-		){
-		 light = max(dot(
-                normalize(spotLightNormal),
-                localLightDir), 
-                                0.0);
-		 if(light>0.0){
-			light*=1600.0/pow(dirLength,2.0);
-		 }
-		}
-gl_FragColor += vec4(result *light,1.0); 
+
+
+
+//gl_FragColor += vec4(result *light,1.0); 
+//gl_FragColor += vec4(base *light,1.0); 
 }
