@@ -10,10 +10,13 @@ struct LightAttr
 };
 uniform LightAttr light;
 
-uniform sampler2D sBase;
+uniform sampler2D sDiffuse;
 uniform sampler2D sClouds;
-uniform sampler2D sCar;
+uniform sampler2D sPeople2;
+uniform sampler2D sBase;
+uniform sampler2D sPeople;
 uniform float shift;
+uniform float shiftX;
 
 uniform vec3 moonColor;
 
@@ -37,8 +40,11 @@ void main()
   float kSpecular = light.specular.x;
   float s = 10.0;
 
+  vec3 albedo = texture2D(sDiffuse, fTexCoord).rgb;
   vec3 base = texture2D(sBase, fTexCoord).rgb;
-  vec3 car = texture2D(sCar, fTexCoord - vec2(shift, 0.0)).rgb;
+  float people = texture2D(sPeople, fTexCoord - vec2(shiftX, 0)).r;
+  float people2 = texture2D(sPeople2, fTexCoord - vec2(0, shiftX)).r;
+  // vec3 car = texture2D(sCar, fTexCoord - vec2(shift, 0.0)).rgb;
   float cloud = texture2D(sClouds, fTexCoord - vec2(shift, 0.0)).r;
 
   
@@ -80,8 +86,9 @@ void main()
 
   
 
+  // vec3 moonColor = mix(base, albedo, ambient + diffuse).rgb;
 
-	vec3 moonColor = (ambient + diffuse) * base * car;
+	vec3 moonColor = (ambient + diffuse) * albedo *  base * people * people2;
   vec3 cloudColor = vec3(1.0, 0.5, 0.2) * (ambient + diffuse);
 
   vec3 result = mix(moonColor, cloudColor, cloud);

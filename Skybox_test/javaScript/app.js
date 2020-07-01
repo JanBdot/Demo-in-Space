@@ -235,7 +235,8 @@ async function InitDemo() {
 	const normalMatrix = new Float32Array(9);
 	const invViewMatrix = mat3.create();
 
-
+	let shiftDirectionPositive = true
+	let shiftX = 0;
 	let cameraPosition;
 	let cameraXrotate;
 	
@@ -254,6 +255,7 @@ async function InitDemo() {
 		gl.depthMask(true);
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 		gl.enable(gl.DEPTH_TEST);
+		gl.disable(gl.CULL_FACE);
 
 		mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.clientWidth / canvas.clientHeight, 0.1, 1000.0);
 
@@ -349,15 +351,34 @@ async function InitDemo() {
 		gl.useProgram(moon.program);
 
 		
-		const moonBaseLocation = gl.getUniformLocation(moon.program, "sBase");
-		gl.uniform1i(moonBaseLocation, 0);
+		const moonDiffuseLocation = gl.getUniformLocation(moon.program, "sDiffuse");
+		gl.uniform1i(moonDiffuseLocation, 0);
 		const moonBumpLocation = gl.getUniformLocation(moon.program, "sClouds");
 		gl.uniform1i(moonBumpLocation, 1);
-		const moonCarLocation = gl.getUniformLocation(moon.program, "sCar");
-		gl.uniform1i(moonCarLocation, 2);
+		const moonPeople2Location = gl.getUniformLocation(moon.program, "sPeople2");
+		gl.uniform1i(moonPeople2Location, 2);
+		const moonBaseLocation = gl.getUniformLocation(moon.program, "sBase");
+		gl.uniform1i(moonBaseLocation, 3);
+		const moonPeopleLocation = gl.getUniformLocation(moon.program, "sPeople");
+		gl.uniform1i(moonPeopleLocation, 4);
 		
 		shiftUniformLocation = gl.getUniformLocation(moon.program, 'shift');
 		gl.uniform1f(shiftUniformLocation, angle/10);
+		
+		const shiftXUniformLocation = gl.getUniformLocation(moon.program, 'shiftX');
+		gl.uniform1f(shiftXUniformLocation, shiftX/40000);
+
+		if (shiftDirectionPositive){
+			shiftX = shiftX + 1; 
+		} else {
+			shiftX = shiftX - 1;
+		}		
+		if (shiftX === 150 && shiftDirectionPositive) {
+			shiftDirectionPositive = false;
+		}
+		if (shiftX === -150 && !shiftDirectionPositive) {
+			shiftDirectionPositive = true;
+		}
 
 		mat3.identity(invViewMatrix);
 		mat3.fromMat4(invViewMatrix, viewMatrix);
@@ -532,11 +553,6 @@ async function InitDemo() {
 
 		// ########################################################################
 		// ########################################################################
-
-
-		
-
-		// drawTestBoxes();
 	};
 
 	const drawSpaceship = function() {
@@ -581,7 +597,9 @@ async function InitDemo() {
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		gl.enable(gl.DEPTH_TEST);
+		gl.enable(gl.CULL_FACE);
 		gl.useProgram(cockpit.program);
+
 		/* 		//const invViewMatrix = mat3.create();
 		mat3.fromMat4(invViewMatrix, viewMatrix);
 		mat3.invert(invViewMatrix, invViewMatrix); // repräsentiert die Inverse der Koordinatenachse von der ViewMatrix (Kameraorientierung)
@@ -620,6 +638,7 @@ async function InitDemo() {
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
 		gl.enable(gl.DEPTH_TEST);
+		gl.disable(gl.CULL_FACE);
 		gl.useProgram(spotlight.program);
 		
 
@@ -729,139 +748,4 @@ async function InitDemo() {
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	}
-
-	const drawTestBoxes = function() {
-		gl.useProgram(testBox.program);
-		
-		let matProjUniformLocation = gl.getUniformLocation(testBox.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		let matViewUniformLocation = gl.getUniformLocation(testBox.program, 'mView');		
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
-		let colorBox = gl.getUniformLocation(testBox.program, 'fragColor');
-		gl.uniform4fv(colorBox, [0.0, 1.0, 0, 1.0]);
-		
-		mat4.identity(worldMatrix);
-		let matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
-		mat4.translate(worldMatrix, worldMatrix, [0,0,30.0]);
-		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// testBox.texture = boxTexture;
-		testBox.draw();
-
-		gl.useProgram(testBox.program);
-		
-		matProjUniformLocation = gl.getUniformLocation(testBox.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		matViewUniformLocation = gl.getUniformLocation(testBox.program, 'mView');		
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
-		colorBox = gl.getUniformLocation(testBox.program, 'fragColor');
-		gl.uniform4fv(colorBox, [0.0, 0.0, 1.0, 1.0]);
-		
-		mat4.identity(worldMatrix);
-		matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
-		mat4.translate(worldMatrix, worldMatrix, [0,0,-30.0]);
-		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// testBox.texture = boxTexture;
-		testBox.draw();
-		
-		gl.useProgram(testBox.program);
-		
-		matProjUniformLocation = gl.getUniformLocation(testBox.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		matViewUniformLocation = gl.getUniformLocation(testBox.program, 'mView');		
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
-		colorBox = gl.getUniformLocation(testBox.program, 'fragColor');
-		gl.uniform4fv(colorBox, [1.0, 0.0, 1.0, 1.0]);
-		
-		mat4.identity(worldMatrix);
-		matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
-		mat4.translate(worldMatrix, worldMatrix, [30.0,0,0.0]);
-		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// testBox.texture = boxTexture;
-		testBox.draw();
-		
-		// testBox.texture = boxTexture;
-		testBox.draw();
-
-		gl.useProgram(testBox.program);
-		
-		matProjUniformLocation = gl.getUniformLocation(testBox.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		matViewUniformLocation = gl.getUniformLocation(testBox.program, 'mView');		
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
-		colorBox = gl.getUniformLocation(testBox.program, 'fragColor');
-		gl.uniform4fv(colorBox, [1.0, 0.0, 0.0, 1.0]);
-		
-		mat4.identity(worldMatrix);
-		matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
-		mat4.translate(worldMatrix, worldMatrix, [-30.0,0,0.0]);
-		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// testBox.texture = boxTexture;
-		testBox.draw();
-
-
-		gl.useProgram(testBox.program);
-		
-		matProjUniformLocation = gl.getUniformLocation(testBox.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		matViewUniformLocation = gl.getUniformLocation(testBox.program, 'mView');		
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
-		colorBox = gl.getUniformLocation(testBox.program, 'fragColor');
-		gl.uniform4fv(colorBox, [1.0, 1.0, 0.0, 1.0]);
-		
-		mat4.identity(worldMatrix);
-		matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
-		mat4.translate(worldMatrix, worldMatrix, [0.0,30.0,0.0]);
-		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// testBox.texture = boxTexture;
-		testBox.draw();
-
-
-		gl.useProgram(testBox.program);
-		
-		matProjUniformLocation = gl.getUniformLocation(testBox.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		matViewUniformLocation = gl.getUniformLocation(testBox.program, 'mView');		
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-
-		colorBox = gl.getUniformLocation(testBox.program, 'fragColor');
-		gl.uniform4fv(colorBox, [0.0, 1.0, 1.0, 1.0]);
-		
-		mat4.identity(worldMatrix);
-		matWorldUniformLocation = gl.getUniformLocation(testBox.program, 'mWorld');
-		mat4.translate(worldMatrix, worldMatrix, [0.0,-30.0,0.0]);
-		mat4.scale(worldMatrix, worldMatrix, [4.0, 4.0, 4.0]);
-		// mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// testBox.texture = boxTexture;
-		testBox.draw();
-
-	}
-
 }
