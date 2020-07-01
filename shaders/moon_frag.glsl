@@ -73,11 +73,8 @@ void main()
 			light*=5.0/pow(dirLength,2.0);
 		 }
 		}
-
-
   diffuse+= light* max(dot(spotLightNormal, locallightDirL), 0.0);
   specular+= light * pow(max(dot(reflect(-locallightDirL, spotLightNormal), eyeDir), 0.0), s);
-
 
   // vec3 moonColor = mix(base, albedo, ambient + diffuse).rgb;
 
@@ -87,8 +84,4 @@ void main()
   vec3 result = mix(moonColor, cloudColor, cloud);
 
   gl_FragColor = vec4(result, 1.0);
-
-
-//gl_FragColor += vec4(result *light,1.0); 
-//gl_FragColor += vec4(base *light,1.0); 
 }

@@ -85,15 +85,7 @@ async function InitDemo() {
 	}
 	//programList.push(cockpit.program);
 
-/* 	// Create StrTEst object
-	console.log('Creating StrTest object ...');
-	const strTest = await createStrTest(gl,0,0);
-	strTest.program = await createShaderProgram(gl, './shaders/astrTest_vert.glsl', './shaders/astrTest_frag.glsl');
-	if (!strTest.program) {
-		console.error('StrTest Cannot run without shader program!');
-		return;
-	}
-	programList.push(strTest.program); */
+
 	
 
 	// Create asteroid
@@ -103,8 +95,7 @@ async function InitDemo() {
 		
 		for (let i = 0; i < numberOfAsteroidTextures; i++) {
 			const asteroid = await createAsteroid(gl, i, j);
-			// asteroid.program = await createShaderProgram(gl, './shaders/astrTest_vert.glsl', './shaders/astrTest_frag.glsl');
-			asteroid.program = await createShaderProgram(gl, './shaders/earth_vert.glsl', './shaders/astrTest_frag.glsl');
+			asteroid.program = await createShaderProgram(gl, './shaders/earth_vert.glsl', './shaders/asteroid_frag.glsl');
 			if (!asteroid.program) {
 				console.error('asteroid Cannot run without shader program!');
 				return;
@@ -449,12 +440,9 @@ async function InitDemo() {
 
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
-		// Draw StrTest
+		// Camera Control
 		// ------------------------------------------------------------------------
 		// ------------------------------------------------------------------------
-/* 		gl.enable(gl.DEPTH_TEST);
-		gl.useProgram(strTest.program); */
-
 		cameraXrotate = (mouseXposition/2000)*Math.PI;
 		cameraPosition=[
 			camDistance*Math.cos(mouseYposition*Math.PI/1000),
@@ -463,74 +451,7 @@ async function InitDemo() {
 		mat4.identity(viewMatrix);
 		mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
 		mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]);
-
-		//gl.useProgram(strTest.program); 
-
-		var camDir =[
-			cameraPosition[0]*Math.cos(cameraXrotate),
-			cameraPosition[1],
-			cameraPosition[0]*Math.sin(cameraXrotate)]
 		
-		//var camPosLocation = gl.getUniformLocation(strTest.program, 'cPos');
-/* 		console.log(
-			Math.floor(camDir[0]),	
-			Math.floor(camDir[1]),
-			Math.floor(camDir[2]),
-		) */
-		//gl.uniform3f(camPosLocation,camDir[0],camDir[1],camDir[2]);
-		//gl.uniform3f(camPosLocation,angle/2,angle/3,angle/6);
-
-	//	var colorAttribLocation = gl.getAttribLocation(this.program, 'vColor');
-//		gl.vertexAttrib4f(colorAttribLocation, 0.0, 0.0, 1.0, 1.0);
-		
-
-/* 		matProjUniformLocation = gl.getUniformLocation(strTest.program, 'mProj');
-		gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
-		
-		matViewUniformLocation = gl.getUniformLocation(strTest.program, 'mView');
-		gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
-		
-		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [-100, 0.0, 0.0]);
-		mat4.scale(worldMatrix, worldMatrix, [20.0, 20.0, 20.0]); */
-		
-		//var lightXrotate = (mouseLightControlY/2000)*Math.PI;
-		//mat4.rotate(worldMatrix,worldMatrix,lightXrotate,[0,1,0] );
-
-
-
-/* 			var lpPosition=[
-			camDistance*Math.cos(mouseLightControlY*Math.PI/1000),
-			-camDistance*Math.sin(mouseLightControlY*Math.PI/1000),0]; */
-
-/* 			mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [0, 1, 0]);
-			mat4.rotate(viewMatrix,viewMatrix,cameraXrotate, [0,1,0]); */	
-		
-	//	matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
-	//	gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-		
-		// strTest.draw();
-
-/* 		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [0.0, 0.0, 10.0]);
-		mat4.scale(worldMatrix, worldMatrix, [1.0, 1.0, 1.0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle, [0, 1.0, 0]);
-
-		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
-		strTest.draw();
-
-		mat4.identity(worldMatrix);
-		mat4.translate(worldMatrix, worldMatrix, [15.0, 0.0, -5.0]);
-		mat4.scale(worldMatrix, worldMatrix, [1.0, 1.0, 1.0]);
-		mat4.rotate(worldMatrix, worldMatrix, angle/3, [0, 1.0, 0]);
-
-		matWorldUniformLocation = gl.getUniformLocation(strTest.program, 'mWorld');
-		gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
-		strTest.draw(); */
-
 		// ########################################################################
 		// ########################################################################
 	};

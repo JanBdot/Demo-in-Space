@@ -35,9 +35,6 @@ async function createStrTest(gl, textureID, modelID) {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBufferObject);
 
-		//var colorAttribLocation = gl.getAttribLocation(this.program, 'vColor');
-		//gl.vertexAttrib4f(colorAttribLocation, 1.0, 1.0, 1.0, 1.0);
-
 		const positionAttribLocation = gl.getAttribLocation(this.program, 'vPosition');
 		const texCoordAttribLocation = gl.getAttribLocation(this.program, 'vTexCoord');
 		const normalAttribLocation = gl.getAttribLocation(this.program, 'vNormal');

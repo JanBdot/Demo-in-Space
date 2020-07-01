@@ -32,7 +32,7 @@ window.addEventListener('mousemove',function(e){
         if((mouseYposition +mouseYStart - mouseYBuffer<500)&& (mouseYposition +mouseYStart - mouseYBuffer>-500)){
             mouseYposition +=mouseYStart - mouseYBuffer;
         }
-        // console.log(mouseXposition+" "+mouseYposition);
+
     }
     if((spaceBar)){
         if((mouseLightControlX +mouseXStart - mouseXBuffer<400)
@@ -42,10 +42,6 @@ window.addEventListener('mousemove',function(e){
         && (mouseLightControlY -mouseYStart + mouseYBuffer>-400))
         {mouseLightControlY+= -mouseYStart + mouseYBuffer;}
         
-/*         console.log(
-            Math.floor( mouseLightControlY)+"= "+
-            Math.floor(mouseYStart)+" +"+
-            Math.floor( mouseYBuffer)); */
         
         spotLightDir = [
             Math.cos(mouseLightControlY*Math.PI/1000)*Math.cos(mouseLightControlX*Math.PI/1000),
@@ -59,7 +55,6 @@ window.addEventListener('mousemove',function(e){
 window.addEventListener('wheel',function(e) {
 	
 	if ((camDistance + e.deltaY/20 >10)&&(camDistance + e.deltaY/20<830)) {
-        //console.log(camDistance);
 		camDistance+= e.deltaY/20;		
 	}	
 });
@@ -68,7 +63,6 @@ document.addEventListener("keydown",
     function(event) {
         if(event.keyCode===32){
             spaceBar=true;
-            //console.log("SPACE ON")  ;
             mouseXStart=mouseXBuffer;
             mouseYStart=mouseYBuffer;
             
@@ -79,7 +73,6 @@ document.addEventListener('keyup',
     function (evt) {
         if (evt.keyCode === 32) {
             spaceBar=false;
-            //console.log("SPACE OFF") 
             mouseXStart=0;
             mouseYStart=0;
         }
