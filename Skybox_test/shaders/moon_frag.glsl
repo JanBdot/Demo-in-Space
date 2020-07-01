@@ -18,8 +18,6 @@ uniform sampler2D sPeople;
 uniform float shift;
 uniform float shiftX;
 
-uniform vec3 moonColor;
-
 varying vec2 fTexCoord;
 varying vec3 fNormal;
 varying mat4 mViewFrag;

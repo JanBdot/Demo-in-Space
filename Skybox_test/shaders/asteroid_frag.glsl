@@ -10,48 +10,36 @@ struct LightAttr
 };
 uniform LightAttr light;
 
-uniform sampler2D diffuseMap;
-uniform sampler2D normalMap;
+uniform sampler2D sDiffuse;
 
 uniform vec3 viewPos;
 
-uniform bool showNormalMapping;
-
 varying vec2 fTexCoord;
 varying vec3 fNormal;
-varying vec3 fragPos;
-varying vec3 fLightDir;
 varying mat4 mViewFrag;
-varying vec3 fEyeDir;
+varying mat4 fWorld;
+varying vec3 fragPos;
 varying vec3 spotLightNormal;
 
+varying vec3 fEyeDir;
 
 void main()
 {
-	vec3 objectColor = texture2D(diffuseMap, fTexCoord).rgb;
-
-	float ambientStrength = 0.05;
-	vec3 ambient = ambientStrength * light.ambient;
-
 	vec3 lightDir = normalize((mViewFrag * vec4(light.position, 0.0)).xyz);
-	vec3 normal = normalize(fNormal);
+	vec3 normalDir = normalize(fNormal);
 	vec3 eyeDir = normalize(fEyeDir);
+	
+	float kAmbient = light.ambient.x;
+	float kDiffuse = light.diffuse.x;
+	float kSpecular = light.specular.x;
+	float s = 10.0;
 
-	// // if (showNormalMapping){
-	// // if (false){
-	// 	normal = texture2D(normalMap, fTexCoord).rgb;
-	// 	normal = normalize(normal * 2.0 - 1.0);
-	// }
+	vec3 texture = texture2D(sDiffuse, fTexCoord).rgb;
 
-	// diffFactor is 1 if normal and lightDir is direct opposite, angle > +-90 --> diffFactor < 0
-	float diffFactor = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = diffFactor * light.diffuse;
+	float ambient = kAmbient / 10.0;
+	float diffuse = kDiffuse * max(dot(normalDir, lightDir), 0.0);
+	float specular = kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 
-	vec3 viewDir = normalize(eyeDir - fragPos);
-	float specFactor = 0.0;
-	vec3 halfDir = normalize(lightDir + viewDir);
-	specFactor = pow(max(dot(halfDir, normal), 0.0), 32.0);
-	vec3 specular = specFactor * light.specular;
 	//spotlight
   	////////////////////////////
 	vec3 locallightDirL =	vec3(0.0-fragPos[0],
@@ -78,8 +66,8 @@ void main()
 
 		}
 
-	vec3 result = (ambient + diffuse + specular ) * objectColor;
-	result +=light* objectColor;
+	vec3 result = (ambient + diffuse + specular ) * texture;
+	result +=light* texture;
 
 	gl_FragColor =  vec4(result, 1.0);
 }
