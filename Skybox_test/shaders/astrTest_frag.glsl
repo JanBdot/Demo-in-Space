@@ -39,11 +39,7 @@ void main()
 	vec3 normal = normalize(fragNormal);
 	vec3 viewPos = normalize(viewPosition);
 
-	// if (showNormalMapping){
-	if (false){
-		normal = texture2D(normalMap, fTexCoord).rgb;
-		normal = normalize(normal * 2.0 - 1.0);
-	}
+
 	vec4 texel = vec4(1.0, 1.0, 1.0, 1.0);
 	// diffFactor is 1 if normal and lightDir is direct opposite, angle > +-90 --> diffFactor < 0
 	float diffFactor = max(dot(normal, lightDir), 0.0);
@@ -105,7 +101,7 @@ void main()
 		 light = max(dot(normal,localLightDir),0.0);
 		 if(light>0.0){
 			//light*=0.2 / pow(dirLength,2.0);
-			light*=1600.0/pow(dirLength,2.0);
+			light*=800.0/pow(dirLength,2.0);
 		 }
 		 
 		//gl_FragColor = vec4(objectColor*light,1.0);

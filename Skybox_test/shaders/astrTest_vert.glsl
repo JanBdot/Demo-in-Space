@@ -26,19 +26,14 @@ void main()
 {   //  view->World
     mViewFrag = mWorld;
     fPosition=vPosition;
-/*     viewPosition.x = mView[3].x;
-    viewPosition.y = mView[3].y;
-    viewPosition.z = mView[3].z; */
-/*     viewPosition.x = mWorld[3].x;
-    viewPosition.y = mWorld[3].y;
-    viewPosition.z = mWorld[3].z; */
+
     viewPosition = cPos;
-    // fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
+    
     fragPos = vec3(mWorld * vec4(vPosition, 1.0));
-    // fLightDir = (mView * vec4(lightDir, 0.0)).xyz;
-    // fTexCoord = vTexCoord;
+
+
     fTexCoord = vTexCoord * vec2(1.0, -1.0) + vec2(0.0, 1.0);
-    //fragNormal = mNormal * vNormal;
+    
     fragNormal= (mWorld* vec4(vNormal, 0.0)).xyz	;
     gl_Position = mProj * mView * mWorld * vec4(vPosition, 1.0);
 

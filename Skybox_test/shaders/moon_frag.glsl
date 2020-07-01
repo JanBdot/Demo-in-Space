@@ -53,8 +53,7 @@ void main()
   float specular = kSpecular * pow(max(dot(reflect(-lightDir, normalDir), eyeDir), 0.0), s);
 
   //spotlight
-  ////////////////////////////
-  vec3 newLight = normalize(light.position);
+  ///////////////////////////
 	vec3 locallightDirL =vec3(	0.0-fragPos[0],
                              5.0-fragPos[1],
 						            		0.0-fragPos[2]);
@@ -78,13 +77,9 @@ void main()
 		}
 
 
-
   diffuse+= light* max(dot(spotLightNormal, locallightDirL), 0.0);
   specular+= light * pow(max(dot(reflect(-locallightDirL, spotLightNormal), eyeDir), 0.0), s);
 
-
-
-  
 
   // vec3 moonColor = mix(base, albedo, ambient + diffuse).rgb;
 
@@ -94,9 +89,6 @@ void main()
   vec3 result = mix(moonColor, cloudColor, cloud);
 
   gl_FragColor = vec4(result, 1.0);
-
-
-
 
 
 //gl_FragColor += vec4(result *light,1.0); 
